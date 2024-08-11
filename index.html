@@ -7,13 +7,52 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>Looking For Group</h1>
+    <h1>Titan LFG</h1>
     <form id="lfgForm">
-        <input type="text" id="game" placeholder="Game" required>
-        <input type="text" id="description" placeholder="Description" required>
         <button type="submit">Create Group</button>
+        <button type="submit">Donate</button>
+        <button type="submit">Void Farming</button>
+        <button type="submit">Calling of the Descendants</button>
+        <button type="submit">Infiltration Operation</button>
+        <button type="submit">Special Operation</button>
+        
+        <label for="missionType">Select a Mission Type:</label>
+        <select id="missionType" onchange="updateLevels()">
+            <option value="Void Farming">Void Farming</option>
+            <option value="Calling of the Descendants">Calling of the Descendants</option>
+            <option value="Infiltration Operation">Infiltration Operation</option>
+            <option value="Special Operation">Special Operation</option>
+        </select>
+
+        <label for="missionLevel">What is your Objective:</label>
+        <select id="missionLevel">
+            <!-- Levels will be populated here -->
+        </select>
     </form>
-    <div id="groups"></div>
-    <script src="script.js"></script>
+
+    <script src="Script.js">
+        const levels = {
+            "Void Farming": ['Fire', 'Electric', 'Ice', 'Toxic', 'Non-Attribute'],
+            "Calling of the Descendants": ['Bio-Lab', 'Caligo Ossuary', 'Heart-of-the-Fortress', 'Magister-Lab'],
+            "Infiltration Operation": ['Level 3-1', 'Level 3-2', 'Level 3-3'],
+            "Special Operation": ['Level 4-1', 'Level 4-2', 'Level 4-3']
+        };
+
+        function updateLevels() {
+            const missionType = document.getElementById('missionType').value;
+            const missionLevel = document.getElementById('missionLevel');
+            missionLevel.innerHTML = '';
+
+            levels[missionType].forEach(level => {
+                const option = document.createElement('option');
+                option.value = level;
+                option.textContent = level;
+                missionLevel.appendChild(option);
+            });
+        }
+
+        // Initialize levels for the default selected mission type
+        updateLevels();
+    </script>
 </body>
 </html>
