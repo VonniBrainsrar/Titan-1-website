@@ -15,35 +15,74 @@
             padding: 10px;
             margin-bottom: 5px;
         }
+        /* Basic styling for authentication forms */
+        .auth-form {
+            margin: 20px 0;
+        }
+        .auth-form input {
+            display: block;
+            margin: 10px 0;
+            padding: 10px;
+            width: 100%;
+        }
+        .auth-form button {
+            padding: 10px;
+            width: 100%;
+        }
     </style>
 </head>
 <body>
     <h1>Titan LFG</h1>
-    <form id="lfgForm">
-        <button type="button" onclick="createGroup()">Create Group</button>
-        <button type="button" onclick="selectMission('Void Farming')">Void Farming</button>
-        <button type="button" onclick="selectMission('Calling of the Descendants')">Calling of the Descendants</button>
-        <button type="button" onclick="selectMission('Encrypted Vaults')">Encrypted Vaults</button>
-        <button type="button" onclick="selectMission('Zone Farming')">Zone Farming</button>
-        <button type="button" onclick="selectMission('Normal Void Battles')">Normal Void Battles</button>
-        <button type="button" onclick="selectMission('Hard Void Battles')">Hard Void Battles</button>
-        <button type="button" onclick="donate()">Donate</button>
-        
-        <label for="missionType">Select a Mission Type:</label>
-        <select id="missionType" onchange="updateLevels()">
-            <option value="Void Farming">Void Farming</option>
-            <option value="Calling of the Descendants">Calling of the Descendants</option>
-            <option value="Normal Void Battles">Normal Void Battles</option>
-            <option value="Hard Void Battles">Hard Void Battles</option>
-            <option value="Encrypted Vaults">Encrypted Vaults</option>
-            <option value="Zone Farming">Zone Farming</option>
-        </select>
+    
+    <!-- Authentication Forms -->
+    <div class="auth-form">
+        <h2>Register</h2>
+        <input type="email" id="registerEmail" placeholder="Email" />
+        <input type="password" id="registerPassword" placeholder="Password" />
+        <button onclick="register()">Register</button>
+    </div>
+    
+    <div class="auth-form">
+        <h2>Login</h2>
+        <input type="email" id="loginEmail" placeholder="Email" />
+        <input type="password" id="loginPassword" placeholder="Password" />
+        <button onclick="login()">Login</button>
+    </div>
 
-        <label for="missionLevel">What is your Objective:</label>
-        <select id="missionLevel">
-            <!-- Levels will be populated here -->
-        </select>
-    </form>
+    <!-- Main content for group creation -->
+    <div id="mainContent" style="display: none;">
+        <form id="lfgForm">
+            <button type="button" onclick="createGroup()">Create Group</button>
+            <button type="button" onclick="selectMission('Void Farming')">Void Farming</button>
+            <button type="button" onclick="selectMission('Calling of the Descendants')">Calling of the Descendants</button>
+            <button type="button" onclick="selectMission('Encrypted Vaults')">Encrypted Vaults</button>
+            <button type="button" onclick="selectMission('Zone Farming')">Zone Farming</button>
+            <button type="button" onclick="selectMission('Normal Void Battles')">Normal Void Battles</button>
+            <button type="button" onclick="selectMission('Hard Void Battles')">Hard Void Battles</button>
+            <button type="button" onclick="donate()">Donate</button>
+            
+            <label for="missionType">Select a Mission Type:</label>
+            <select id="missionType" onchange="updateLevels()">
+                <option value="Void Farming">Void Farming</option>
+                <option value="Calling of the Descendants">Calling of the Descendants</option>
+                <option value="Normal Void Battles">Normal Void Battles</option>
+                <option value="Hard Void Battles">Hard Void Battles</option>
+                <option value="Encrypted Vaults">Encrypted Vaults</option>
+                <option value="Zone Farming">Zone Farming</option>
+            </select>
+
+            <label for="missionLevel">What is your Objective:</label>
+            <select id="missionLevel">
+                <!-- Levels will be populated here -->
+            </select>
+        </form>
+
+        <!-- Recently created groups list -->
+        <div id="groupList">
+            <h2>Recently Created Groups</h2>
+            <!-- Groups will be listed here -->
+        </div>
+    </div>
 
     <!-- Background music -->
     <audio id="backgroundMusic" autoplay loop>
@@ -51,35 +90,95 @@
         Your browser does not support the audio element.
     </audio>
 
-    <!-- Recently created groups list -->
-    <div id="groupList">
-        <h2>Recently Created Groups</h2>
-        <!-- Groups will be listed here -->
-    </div>
+    <!-- Firebase SDK -->
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.6/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.6.6/firebase-auth.js";
+        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/9.6.6/firebase-firestore.js";
 
-    <script>
-        // Object storing the different mission types and their respective levels
-        const levels = {
-            "Void Farming": ['Fire', 'Electric', 'Ice', 'Toxic', 'Non-Attribute'],
-            "Calling of the Descendants": [
-                'Bio-Lab', 'Caligo Ossuary', 'Heart of the Fortress', 'Magister Lab', 
-                'Mystery\'s End', 'Old Mystery', 'Quarantine Zone', 'Seed Vault', 
-                'Sepulcher', 'Slumber Valley', 'The Asylum', 'The Chapel', 
-                'The Forgottense', 'The Haven', 'The Shelter', 'Unknown Laboratory'
-            ],
-            "Normal Void Battles": ['Grave Walker', 'Stunning Beauty', 'Executioner', 
-                                     'Dead Bride', 'Devourer', 'Pyromaniac', 
-                                     'Swamp Walker', 'Hanged Man'],
-            "Hard Void Battles": ['Executioner', 'Dead Bride', 'Devourer', 'Pyromaniac', 
-                                   'Swamp Walker', 'Obstructor', 'Frost Walker', 
-                                   'Molten Fortress'],
-            "Encrypted Vaults": ['Vault 1', 'Vault 2', 'Vault 3'], // Placeholder levels
-            "Zone Farming": ['Agna Desert', 'Echo Swamp', 'Fortress', 'Haigos', 
-                             'Kingston', 'Sterile Land', 'Vespers', 'White Night Gulch']
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDkXMlEkORvvfH-kBYbBLAfasBoCsHCQmQ",
+            authDomain: "titan1lfg.firebaseapp.com",
+            projectId: "titan1lfg",
+            storageBucket: "titan1lfg.appspot.com",
+            messagingSenderId: "51631664886",
+            appId: "1:51631664886:web:1f9660b9a81b3c945446d7",
+            measurementId: "G-VG05WVY53Q"
         };
 
-        // Array to store created groups
-        const groups = [];
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // Function to handle registration
+        window.register = function() {
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            createUserWithEmailAndPassword(auth, email, password)
+                .then((userCredential) => {
+                    // Registration successful
+                    alert('Registration successful!');
+                    document.getElementById('mainContent').style.display = 'block';
+                })
+                .catch((error) => {
+                    // Handle Errors here.
+                    alert('Error: ' + error.message);
+                });
+        }
+
+        // Function to handle login
+        window.login = function() {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            signInWithEmailAndPassword(auth, email, password)
+                .then((userCredential) => {
+                    // Login successful
+                    alert('Login successful!');
+                    document.getElementById('mainContent').style.display = 'block';
+                })
+                .catch((error) => {
+                    // Handle Errors here.
+                    alert('Error: ' + error.message);
+                });
+        }
+
+        // Function to handle the 'Create Group' button click
+        window.createGroup = async function() {
+            const missionType = document.getElementById('missionType').value;
+            const missionLevel = document.getElementById('missionLevel').value;
+            if (!missionType || !missionLevel) {
+                alert('Please select both a mission type and objective.');
+                return;
+            }
+
+            const group = {
+                type: missionType,
+                level: missionLevel,
+                timestamp: new Date()
+            };
+
+            try {
+                await addDoc(collection(db, "groups"), group);
+                alert('Group created successfully!');
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+
+        // Function to handle the 'Donate' button click
+        window.donate = function() {
+            alert('Coming Soon');
+            // Add any additional logic for donation here
+        }
+
+        // Function to handle mission selection and update the levels
+        window.selectMission = function(missionType) {
+            document.getElementById('missionType').value = missionType;
+            updateLevels();
+        }
 
         // Function to update mission levels based on selected mission type
         function updateLevels() {
@@ -95,60 +194,22 @@
             });
         }
 
-        // Function to handle the 'Create Group' button click
-        function createGroup() {
-            const missionType = document.getElementById('missionType').value;
-            const missionLevel = document.getElementById('missionLevel').value;
-            if (!missionType || !missionLevel) {
-                alert('Please select both a mission type and objective.');
-                return;
-            }
-
-            const group = {
-                type: missionType,
-                level: missionLevel,
-                timestamp: new Date()
-            };
-
-            // Add the new group to the beginning of the array
-            groups.unshift(group);
-
-            // Update the group list display
-            displayGroups();
-        }
-
-        // Function to handle the 'Donate' button click
-        function donate() {
-            alert('Coming Soon');
-            // Add any additional logic for donation here
-        }
-
-        // Function to handle mission selection and update the levels
-        function selectMission(missionType) {
-            document.getElementById('missionType').value = missionType;
-            updateLevels();
-        }
-
         // Function to display the list of groups
-        function displayGroups() {
+        async function displayGroups() {
             const groupList = document.getElementById('groupList');
             groupList.innerHTML = '<h2>Recently Created Groups</h2>'; // Reset list
 
-            // Filter out groups older than 15 minutes
-            const now = new Date();
-            const fifteenMinutes = 15 * 60 * 1000; // 15 minutes in milliseconds
-            const recentGroups = groups.filter(group => (now - group.timestamp) < fifteenMinutes);
-
-            recentGroups.forEach(group => {
-                const groupItem = document.createElement('div');
-                groupItem.classList.add('group-item');
-                groupItem.textContent = `${group.timestamp.toLocaleString()} - ${group.type} - ${group.level}`;
-                groupList.appendChild(groupItem);
+            // Query Firestore for groups, ordered by timestamp
+            const q = query(collection(db, "groups"), orderBy("timestamp", "desc"), limit(10));
+            onSnapshot(q, (querySnapshot) => {
+                querySnapshot.forEach((doc) => {
+                    const group = doc.data();
+                    const groupItem = document.createElement('div');
+                    groupItem.classList.add('group-item');
+                    groupItem.textContent = `${new Date(group.timestamp.seconds * 1000).toLocaleString()} - ${group.type} - ${group.level}`;
+                    groupList.appendChild(groupItem);
+                });
             });
-
-            // Update the groups array to only include recent groups
-            groups.length = 0; // Clear the existing groups
-            groups.push(...recentGroups); // Add only recent groups back to the array
         }
 
         // Initialize the mission levels for the default selected mission type
@@ -156,6 +217,9 @@
 
         // Set an interval to check and update the list every minute
         setInterval(displayGroups, 60000);
+
+        // Display the groups on page load
+        displayGroups();
     </script>
 </body>
 </html>
