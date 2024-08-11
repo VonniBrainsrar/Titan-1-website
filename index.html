@@ -11,55 +11,58 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f4f4f4;
+            background-color: #121212; /* Dark background */
+            color: #e0e0e0; /* Light text color */
         }
         h1 {
             text-align: center;
             margin-top: 20px;
-            color: #333;
+            color: #1e90ff; /* Blue color */
         }
         /* Auth Form Styles */
         .auth-form {
             max-width: 400px;
             margin: 0 auto;
             padding: 20px;
-            background-color: #fff;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            background-color: #1f1f1f; /* Dark background for form */
+            box-shadow: 0 0 10px rgba(0,0,0,0.3); /* Slightly darker shadow */
             border-radius: 5px;
-            display: flex;
-            flex-direction: column;
+            border: 1px solid #555; /* Grey border */
         }
         .auth-form input, .auth-form textarea, .auth-form button {
             width: 100%;
             margin-bottom: 10px;
             padding: 10px;
             box-sizing: border-box;
+            border: 1px solid #555; /* Grey border for inputs */
+            background-color: #1f1f1f; /* Dark background for inputs */
+            color: #e0e0e0; /* Light text color for inputs */
         }
         .auth-form button {
-            background-color: #007bff;
+            background-color: #1e90ff; /* Blue button */
             color: #fff;
             border: none;
             cursor: pointer;
         }
         .auth-form button:hover {
-            background-color: #0056b3;
+            background-color: #4682b4; /* Darker blue on hover */
         }
         /* Main Content Styles */
         #mainContent {
-            display: none; /* Hidden initially */
             max-width: 800px;
             margin: 20px auto;
             padding: 20px;
-            background-color: #fff;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            background-color: #1f1f1f; /* Dark background for main content */
+            box-shadow: 0 0 10px rgba(0,0,0,0.3); /* Slightly darker shadow */
             border-radius: 5px;
+            border: 1px solid #555; /* Grey border */
         }
         #groups {
             margin-top: 20px;
         }
         .group-item {
             padding: 10px;
-            border-bottom: 1px solid #ddd;
+            border-bottom: 1px solid #555; /* Grey border for group items */
         }
         .group-item:last-child {
             border-bottom: none;
@@ -70,9 +73,10 @@
             max-width: 800px;
             margin: 20px auto;
             padding: 20px;
-            background-color: #fff;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            background-color: #1f1f1f; /* Dark background for profile */
+            box-shadow: 0 0 10px rgba(0,0,0,0.3); /* Slightly darker shadow */
             border-radius: 5px;
+            border: 1px solid #555; /* Grey border */
         }
         /* Background Music */
         #backgroundMusic {
@@ -85,14 +89,7 @@
 
     <!-- Authentication Forms -->
     <div class="auth-form" id="authForm">
-        <div id="registerForm">
-            <h2>Register</h2>
-            <input type="text" id="registerUsername" placeholder="Username" required />
-            <input type="email" id="registerEmail" placeholder="Email" required />
-            <input type="password" id="registerPassword" placeholder="Password" required />
-            <button type="button" onclick="register()">Register</button>
-        </div>
-        <div id="loginForm" style="display: none;">
+        <div id="loginForm">
             <h2>Login</h2>
             <input type="email" id="loginEmail" placeholder="Email" required />
             <input type="password" id="loginPassword" placeholder="Password" required />
@@ -139,8 +136,8 @@
     <!-- Firebase SDK -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.6/firebase-app.js";
-        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/9.6.6/firebase-auth.js";
-        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, limit, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/9.6.6/firebase-firestore.js";
+        import { getAuth, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/9.6.6/firebase-auth.js";
+        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, limit, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.6.6/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyDkXMlEkORvvfH-kBYbBLAfasBoCsHCQmQ",
@@ -155,28 +152,6 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
-
-        window.register = async function() {
-            const email = document.getElementById('registerEmail').value;
-            const password = document.getElementById('registerPassword').value;
-            const username = document.getElementById('registerUsername').value;
-
-            try {
-                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-                const user = userCredential.user;
-                await setDoc(doc(db, 'users', user.uid), {
-                    email: user.email,
-                    username: username
-                });
-
-                alert('Registration successful!');
-                document.getElementById('mainContent').style.display = 'block';
-                document.getElementById('authForm').style.display = 'none';
-                document.getElementById('profileContent').style.display = 'none';
-            } catch (error) {
-                alert('Error: ' + error.message);
-            }
-        }
 
         window.login = async function() {
             const email = document.getElementById('loginEmail').value;
@@ -266,6 +241,12 @@
             }
             displayLFGGroups();
         };
+
+        document.getElementById('lfgForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            await window.createGroup();
+            displayLFGGroups(); // Refresh the list after creating a group
+        });
     </script>
 </body>
 </html>
