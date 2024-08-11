@@ -228,7 +228,7 @@
             storageBucket: "titan1lfg.appspot.com",
             messagingSenderId: "51631664886",
             appId: "1:51631664886:web:1f9660b9a81b3c945446d7",
-            measurementId: "G-VG05WVY53Q"
+            measurementId: "G-VG05N7CS55"
         };
 
         // Initialize Firebase
@@ -338,24 +338,20 @@
             });
         }
 
-        // Initialize the mission levels for the default selected mission type
-        updateLevels();
-
-        // Display groups on page load
-        displayGroups();
-
         // Function to update mission levels based on selected mission type
-        function updateLevels() {
+        window.updateLevels = function() {
             const missionType = document.getElementById('missionType').value;
             const missionLevel = document.getElementById('missionLevel');
             missionLevel.innerHTML = ''; // Clear existing options
 
-            levels[missionType].forEach(level => {
-                const option = document.createElement('option');
-                option.value = level;
-                option.textContent = level;
-                missionLevel.appendChild(option);
-            });
+            if (levels[missionType]) {
+                levels[missionType].forEach(level => {
+                    const option = document.createElement('option');
+                    option.value = level;
+                    option.textContent = level;
+                    missionLevel.appendChild(option);
+                });
+            }
         }
 
         // Object storing the different mission types and their respective levels
@@ -377,6 +373,12 @@
             "Zone Farming": ['Agna Desert', 'Echo Swamp', 'Fortress', 'Haigos', 
                              'Kingston', 'Sterile Land', 'Vespers', 'White Night Gulch']
         };
+
+        // Initialize the mission levels for the default selected mission type
+        updateLevels();
+
+        // Display groups on page load
+        displayGroups();
     </script>
 </body>
 </html>
