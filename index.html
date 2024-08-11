@@ -5,6 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LFG Site</title>
     <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Basic styling for the group list */
+        #groupList {
+            margin-top: 20px;
+        }
+        .group-item {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-bottom: 5px;
+        }
+    </style>
 </head>
 <body>
     <h1>Titan LFG</h1>
@@ -40,6 +51,12 @@
         Your browser does not support the audio element.
     </audio>
 
+    <!-- Recently created groups list -->
+    <div id="groupList">
+        <h2>Recently Created Groups</h2>
+        <!-- Groups will be listed here -->
+    </div>
+
     <script>
         // Object storing the different mission types and their respective levels
         const levels = {
@@ -61,6 +78,9 @@
                              'Kingston', 'Sterile Land', 'Vespers', 'White Night Gulch']
         };
 
+        // Array to store created groups
+        const groups = [];
+
         // Function to update mission levels based on selected mission type
         function updateLevels() {
             const missionType = document.getElementById('missionType').value;
@@ -77,8 +97,24 @@
 
         // Function to handle the 'Create Group' button click
         function createGroup() {
-            alert('Create Group button clicked!');
-            // Add any additional logic for creating a group here
+            const missionType = document.getElementById('missionType').value;
+            const missionLevel = document.getElementById('missionLevel').value;
+            if (!missionType || !missionLevel) {
+                alert('Please select both a mission type and objective.');
+                return;
+            }
+
+            const group = {
+                type: missionType,
+                level: missionLevel,
+                timestamp: new Date()
+            };
+
+            // Add the new group to the beginning of the array
+            groups.unshift(group);
+
+            // Update the group list display
+            displayGroups();
         }
 
         // Function to handle the 'Donate' button click
@@ -93,8 +129,33 @@
             updateLevels();
         }
 
+        // Function to display the list of groups
+        function displayGroups() {
+            const groupList = document.getElementById('groupList');
+            groupList.innerHTML = '<h2>Recently Created Groups</h2>'; // Reset list
+
+            // Filter out groups older than 15 minutes
+            const now = new Date();
+            const fifteenMinutes = 15 * 60 * 1000; // 15 minutes in milliseconds
+            const recentGroups = groups.filter(group => (now - group.timestamp) < fifteenMinutes);
+
+            recentGroups.forEach(group => {
+                const groupItem = document.createElement('div');
+                groupItem.classList.add('group-item');
+                groupItem.textContent = `${group.timestamp.toLocaleString()} - ${group.type} - ${group.level}`;
+                groupList.appendChild(groupItem);
+            });
+
+            // Update the groups array to only include recent groups
+            groups.length = 0; // Clear the existing groups
+            groups.push(...recentGroups); // Add only recent groups back to the array
+        }
+
         // Initialize the mission levels for the default selected mission type
         updateLevels();
+
+        // Set an interval to check and update the list every minute
+        setInterval(displayGroups, 60000);
     </script>
 </body>
 </html>
