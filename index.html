@@ -221,92 +221,6 @@
         }
 
         window.createGroup = async function() {
-            const missionType = document.getElementById('missionType').value;
-            const missionLevel = document.getElementById('missionLevel').value;
-            const user = auth.currentUser;
-
-            if (user) {
-                try {
-                    await addDoc(collection(db, 'groups'), {
-                        missionType: missionType,
-                        missionLevel: missionLevel,
-                        user: user.email,
-                        createdAt: new Date()
-                    });
-                    alert('Group created successfully!');
-                    displayGroups();
-                } catch (e) {
-                    alert('Error adding group: ' + e.message);
-                }
-            } else {
-                alert('You must be logged in to create a group.');
-            }
-        }
-
-        function displayGroups() {
-            const q = query(collection(db, 'groups'), orderBy('createdAt', 'desc'), limit(10));
-            onSnapshot(q, (snapshot) => {
-                const groupList = document.getElementById('groupList');
-                groupList.innerHTML = '<h2>Recently Created Groups</h2>';
-                snapshot.forEach((doc) => {
-                    const groupData = doc.data();
-                    const div = document.createElement('div');
-                    div.className = 'group-item';
-                    div.textContent = `Mission Type: ${groupData.missionType}, Level: ${groupData.missionLevel}, Created By: ${groupData.user}`;
-                    groupList.appendChild(div);
-                });
-            });
-        }
-
-        window.updateLevels = function() {
-            const missionType = document.getElementById('missionType').value;
-            const missionLevel = document.getElementById('missionLevel');
-            missionLevel.innerHTML = '';
-
-            if (levels[missionType]) {
-                levels[missionType].forEach(level => {
-                    const option = document.createElement('option');
-                    option.value = level;
-                    option.textContent = level;
-                    missionLevel.appendChild(option);
-                });
-            }
-        }
-
-        const levels = {
-            "Void Farming": ['Fire', 'Electric', 'Ice', 'Toxic', 'Non-Attribute'],
-            "Calling of the Descendants": [
-                'Bio-Lab', 'Caligo Ossuary', 'Heart of the Fortress', 'Magister Lab', 
-                'Mystery\'s End', 'Old Mystery', 'Quarantine Zone', 'Seed Vault', 
-                'Sepulcher', 'Slumber Valley', 'The Asylum', 'The Chapel', 
-                'The Forgottense', 'The Haven', 'The Shelter', 'Unknown Laboratory'
-            ],
-            "Normal Void Battles": ['Grave Walker', 'Stunning Beauty', 'Executioner', 
-                                     'Dead Bride', 'Devourer', 'Pyromaniac', 
-                                     'Swamp Walker', 'Hanged Man'],
-            "Hard Void Battles": ['Executioner', 'Dead Bride', 'Devourer', 'Pyromaniac', 
-                                   'Swamp Walker', 'Obstructor', 'Frost Walker', 
-                                   'Molten Fortress'],
-            "Encrypted Vaults": ['Vault 1', 'Vault 2', 'Vault 3'],
-            "Zone Farming": ['Agna Desert', 'Echo Swamp', 'Fortress', 'Haigos', 
-                             'Kingston', 'Sterile Land', 'Vespers', 'White Night Gulch']
-        };
-
-        updateLevels();
-
-        window.onload = function() {
-            const rememberedEmail = localStorage.getItem('rememberedEmail');
-            if (rememberedEmail) {
-                document.getElementById('loginEmail').value = rememberedEmail;
-                document.getElementById('rememberMe').checked = true;
-            }
-        };
-
-        displayGroups();
-
-        document.getElementById('lfgForm').addEventListener('submit', async function(event) {
-            event.preventDefault();
-
             const game = document.getElementById('game').value;
             const description = document.getElementById('description').value;
             const user = auth.currentUser;
@@ -319,17 +233,15 @@
                         user: user.email,
                         createdAt: new Date()
                     });
-
                     alert('Group created successfully!');
                     document.getElementById('lfgForm').reset();
-                    displayLFGGroups();
                 } catch (e) {
                     alert('Error adding group: ' + e.message);
                 }
             } else {
                 alert('You must be logged in to create a group.');
             }
-        });
+        }
 
         function displayLFGGroups() {
             const q = query(collection(db, 'lfgGroups'), orderBy('createdAt', 'desc'), limit(10));
@@ -345,6 +257,15 @@
                 });
             });
         }
+
+        window.onload = function() {
+            const rememberedEmail = localStorage.getItem('rememberedEmail');
+            if (rememberedEmail) {
+                document.getElementById('loginEmail').value = rememberedEmail;
+                document.getElementById('rememberMe').checked = true;
+            }
+            displayLFGGroups();
+        };
     </script>
 </body>
 </html>
