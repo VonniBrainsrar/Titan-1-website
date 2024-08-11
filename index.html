@@ -161,6 +161,10 @@
         <h2>Login</h2>
         <input type="email" id="loginEmail" placeholder="Email" />
         <input type="password" id="loginPassword" placeholder="Password" />
+        <label>
+            <input type="checkbox" id="rememberMe" />
+            Remember Me
+        </label>
         <button onclick="login()">Login</button>
     </div>
 
@@ -264,6 +268,7 @@
         window.login = async function() {
             const email = document.getElementById('loginEmail').value;
             const password = document.getElementById('loginPassword').value;
+            const rememberMe = document.getElementById('rememberMe').checked;
 
             try {
                 const userCredential = await signInWithEmailAndPassword(auth, email, password);
@@ -277,6 +282,13 @@
                 document.getElementById('usernameDisplay').textContent = `Username: ${userData.username}`;
                 document.getElementById('emailDisplay').textContent = `Email: ${user.email}`;
                 
+                // Handle "Remember Me" functionality
+                if (rememberMe) {
+                    localStorage.setItem('rememberedEmail', email);
+                } else {
+                    localStorage.removeItem('rememberedEmail');
+                }
+
                 alert('Login successful!');
                 document.getElementById('mainContent').style.display = 'block';
                 document.getElementById('profileContent').style.display = 'block';
@@ -376,6 +388,15 @@
 
         // Initialize the mission levels for the default selected mission type
         updateLevels();
+
+        // Check for remembered email and populate field if available
+        window.onload = function() {
+            const rememberedEmail = localStorage.getItem('rememberedEmail');
+            if (rememberedEmail) {
+                document.getElementById('loginEmail').value = rememberedEmail;
+                document.getElementById('rememberMe').checked = true;
+            }
+        };
 
         // Display groups on page load
         displayGroups();
