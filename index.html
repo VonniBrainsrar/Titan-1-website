@@ -6,145 +6,7 @@
     <title>LFG Site</title>
     <link rel="stylesheet" href="styles.css">
     <style>
-        /* Basic reset and body styling */
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #1e3c72, #2a5298);
-            color: #fff;
-            padding: 20px;
-            box-sizing: border-box;
-        }
-
-        /* Center content and add padding */
-        #mainContent, #profileContent {
-            max-width: 800px;
-            margin: 0 auto;
-            background: rgba(0, 0, 0, 0.7);
-            padding: 20px;
-            border-radius: 8px;
-        }
-
-        /* Style for headings */
-        h1, h2 {
-            text-align: center;
-            margin: 0;
-        }
-
-        /* Auth form styling */
-        .auth-form {
-            background: rgba(0, 0, 0, 0.8);
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-            margin: 20px auto;
-            width: 300px; /* Set a fixed width for consistency */
-        }
-
-        .auth-form h2 {
-            margin-bottom: 10px;
-        }
-
-        .auth-form input {
-            display: block;
-            margin: 10px 0;
-            padding: 10px;
-            width: calc(100% - 22px); /* Full width minus padding */
-            border: 1px solid #444;
-            border-radius: 4px;
-            background: #222;
-            color: #fff;
-        }
-
-        .auth-form button {
-            padding: 10px;
-            width: 100%;
-            border: none;
-            border-radius: 4px;
-            background: #007bff;
-            color: #fff;
-            cursor: pointer;
-            transition: background 0.3s ease;
-        }
-
-        .auth-form button:hover {
-            background: #0056b3;
-        }
-
-        /* Profile styling */
-        #profileContent {
-            display: none;
-        }
-
-        #profileContent p {
-            font-size: 18px;
-        }
-
-        /* Style for form elements */
-        form {
-            margin: 20px 0;
-        }
-
-        label {
-            display: block;
-            margin: 10px 0 5px;
-        }
-
-        select, button {
-            margin: 5px 0;
-            padding: 10px;
-            width: 100%;
-            border: 1px solid #444;
-            border-radius: 4px;
-            background: #222;
-            color: #fff;
-        }
-
-        select:focus, button:focus {
-            outline: none;
-            box-shadow: 0 0 5px #007bff;
-        }
-
-        button:hover {
-            background: #0056b3;
-        }
-
-        /* Card style for group items */
-        #groupList {
-            margin-top: 20px;
-        }
-
-        .group-item {
-            border: 1px solid #444;
-            padding: 10px;
-            margin-bottom: 10px;
-            border-radius: 8px;
-            background: rgba(255, 255, 255, 0.1);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-            transition: transform 0.3s ease, background 0.3s ease;
-        }
-
-        .group-item:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: scale(1.02);
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            #mainContent, #profileContent {
-                padding: 10px;
-            }
-
-            .auth-form, form, #groupList {
-                padding: 10px;
-                width: 100%; /* Full width on smaller screens */
-                max-width: none; /* Remove max-width constraint */
-            }
-
-            .auth-form input, .auth-form button, select, button {
-                font-size: 16px;
-            }
-        }
+        /* Your existing CSS styles here */
     </style>
 </head>
 <body>
@@ -152,52 +14,23 @@
 
     <!-- Authentication Forms -->
     <div class="auth-form" id="authForm">
-        <h2>Register</h2>
-        <input type="email" id="registerEmail" placeholder="Email" />
-        <input type="password" id="registerPassword" placeholder="Password" />
-        <input type="text" id="registerUsername" placeholder="Username" />
-        <button onclick="register()">Register</button>
-        
-        <h2>Login</h2>
-        <input type="email" id="loginEmail" placeholder="Email" />
-        <input type="password" id="loginPassword" placeholder="Password" />
-        <label>
-            <input type="checkbox" id="rememberMe" />
-            Remember Me
-        </label>
-        <button onclick="login()">Login</button>
+        <!-- Existing registration and login forms here -->
     </div>
 
     <!-- Main content for group creation -->
     <div id="mainContent" style="display: none;">
         <form id="lfgForm">
-            <button type="button" onclick="createGroup()">Create Group</button>
-            <button type="button" onclick="selectMission('Void Farming')">Void Farming</button>
-            <button type="button" onclick="selectMission('Calling of the Descendants')">Calling of the Descendants</button>
-            <button type="button" onclick="selectMission('Encrypted Vaults')">Encrypted Vaults</button>
-            <button type="button" onclick="selectMission('Zone Farming')">Zone Farming</button>
-            <button type="button" onclick="selectMission('Normal Void Battles')">Normal Void Battles</button>
-            <button type="button" onclick="selectMission('Hard Void Battles')">Hard Void Battles</button>
-            <button type="button" onclick="donate()">Donate</button>
+            <label for="game">Game:</label>
+            <input type="text" id="game" placeholder="Game Name" required />
             
-            <label for="missionType">Select a Mission Type:</label>
-            <select id="missionType" onchange="updateLevels()">
-                <option value="Void Farming">Void Farming</option>
-                <option value="Calling of the Descendants">Calling of the Descendants</option>
-                <option value="Normal Void Battles">Normal Void Battles</option>
-                <option value="Hard Void Battles">Hard Void Battles</option>
-                <option value="Encrypted Vaults">Encrypted Vaults</option>
-                <option value="Zone Farming">Zone Farming</option>
-            </select>
-
-            <label for="missionLevel">What is your Objective:</label>
-            <select id="missionLevel">
-                <!-- Levels will be populated here -->
-            </select>
+            <label for="description">Description:</label>
+            <textarea id="description" placeholder="Description" required></textarea>
+            
+            <button type="submit">Create Group</button>
         </form>
 
         <!-- Recently created groups list -->
-        <div id="groupList">
+        <div id="groups">
             <h2>Recently Created Groups</h2>
             <!-- Groups will be listed here -->
         </div>
@@ -205,10 +38,7 @@
 
     <!-- Profile page -->
     <div id="profileContent">
-        <h2>Profile</h2>
-        <p id="usernameDisplay">Username: </p>
-        <p id="emailDisplay">Email: </p>
-        <button onclick="logout()">Logout</button>
+        <!-- Existing profile content here -->
     </div>
 
     <!-- Background music -->
@@ -222,7 +52,7 @@
         // Import the functions you need from the SDKs you need
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.6/firebase-app.js";
         import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/9.6.6/firebase-auth.js";
-        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, limit, doc, setDoc } from "https://www.gstatic.com/firebasejs/9.6.6/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, limit, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/9.6.6/firebase-firestore.js";
 
         // Your web app's Firebase configuration
         const firebaseConfig = {
@@ -275,7 +105,8 @@
                 const user = userCredential.user;
 
                 // Retrieve username from Firestore
-                const userDoc = await doc(db, 'users', user.uid).get();
+                const userDocRef = doc(db, 'users', user.uid);
+                const userDoc = await getDoc(userDocRef);
                 const userData = userDoc.data();
 
                 // Display username and email
@@ -400,6 +231,50 @@
 
         // Display groups on page load
         displayGroups();
+
+        // Handle LFG form submission
+        document.getElementById('lfgForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            const game = document.getElementById('game').value;
+            const description = document.getElementById('description').value;
+            const user = auth.currentUser;
+
+            if (user) {
+                try {
+                    await addDoc(collection(db, 'lfgGroups'), {
+                        game: game,
+                        description: description,
+                        user: user.email,
+                        createdAt: new Date()
+                    });
+
+                    alert('Group created successfully!');
+                    document.getElementById('lfgForm').reset();
+                    displayLFGGroups(); // Refresh the list of LFG groups
+                } catch (e) {
+                    alert('Error adding group: ' + e.message);
+                }
+            } else {
+                alert('You must be logged in to create a group.');
+            }
+        });
+
+        // Function to display LFG groups
+        function displayLFGGroups() {
+            const q = query(collection(db, 'lfgGroups'), orderBy('createdAt', 'desc'), limit(10));
+            onSnapshot(q, (snapshot) => {
+                const groupList = document.getElementById('groups');
+                groupList.innerHTML = '<h2>Recently Created Groups</h2>'; // Clear previous entries
+                snapshot.forEach((doc) => {
+                    const groupData = doc.data();
+                    const div = document.createElement('div');
+                    div.className = 'group';
+                    div.innerHTML = `<h2>${groupData.game}</h2><p>${groupData.description}</p>`;
+                    groupList.appendChild(div);
+                });
+            });
+        }
     </script>
 </body>
 </html>
