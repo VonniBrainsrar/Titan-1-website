@@ -1,8 +1,13 @@
 document.getElementById('lfgForm').addEventListener('submit', function(event) {
     event.preventDefault();
 
-    const game = document.getElementById('game').value;
-    const description = document.getElementById('description').value;
+    const game = document.getElementById('game').value.trim();
+    const description = document.getElementById('description').value.trim();
+
+    if (game === '' || description === '') {
+        alert('Please fill in all fields.');
+        return;
+    }
 
     const group = document.createElement('div');
     group.className = 'group';
