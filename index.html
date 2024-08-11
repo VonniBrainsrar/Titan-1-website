@@ -275,22 +275,12 @@
         function updateLevels() {
             const missionType = document.getElementById('missionType').value;
             const levels = {
-                'Void Farming': ['Fire', 'Ice', 'Electric' 'Void'],
-                'Calling of the Descendants': [
-                'Bio-Lab', 'Caligo Ossuary', 'Heart of the Fortress', 'Magister Lab', 
-                'Mystery\'s End', 'Old Mystery', 'Quarantine Zone', 'Seed Vault', 
-                'Sepulcher', 'Slumber Valley', 'The Asylum', 'The Chapel', 
-                'The Forgottense', 'The Haven', 'The Shelter', 'Unknown Laboratory'
-            ],
-                'Normal Void Battles': ['Grave Walker', 'Stunning Beauty', 'Executioner', 
-                                     'Dead Bride', 'Devourer', 'Pyromaniac', 
-                                     'Swamp Walker', 'Hanged Man'],
-                'Hard Void Battles': ['Executioner', 'Dead Bride', 'Devourer', 'Pyromaniac', 
-                                   'Swamp Walker', 'Obstructor', 'Frost Walker', 
-                                   'Molten Fortress'],
+                'Void Farming': ['Level 1', 'Level 2', 'Level 3'],
+                'Calling of the Descendants': ['Easy', 'Medium', 'Hard'],
+                'Normal Void Battles': ['Beginner', 'Intermediate', 'Advanced'],
+                'Hard Void Battles': ['Hard', 'Very Hard', 'Extreme'],
                 'Encrypted Vaults': ['Vault 1', 'Vault 2', 'Vault 3'],
-                'Zone Farming': 'Agna Desert', 'Echo Swamp', 'Fortress', 'Haigos', 
-                             'Kingston', 'Sterile Land', 'Vespers', 'White Night Gulch']
+                'Zone Farming': ['Zone 1', 'Zone 2', 'Zone 3']
             };
 
             const levelSelect = document.getElementById('missionLevel');
