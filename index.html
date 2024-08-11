@@ -6,43 +6,141 @@
     <title>LFG Site</title>
     <link rel="stylesheet" href="styles.css">
     <style>
-        /* Basic styling for the group list */
-        #groupList {
-            margin-top: 20px;
+        /* Basic reset and body styling */
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: #fff;
+            padding: 20px;
+            box-sizing: border-box;
         }
-        .group-item {
-            border: 1px solid #ddd;
-            padding: 10px;
-            margin-bottom: 5px;
+
+        /* Center content and add padding */
+        #mainContent {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            border-radius: 8px;
         }
-        /* Basic styling for authentication forms */
+
+        /* Style for headings */
+        h1, h2 {
+            text-align: center;
+            margin: 0;
+        }
+
+        /* Auth form styling */
         .auth-form {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
             margin: 20px 0;
         }
+        
         .auth-form input {
             display: block;
             margin: 10px 0;
             padding: 10px;
             width: 100%;
+            border: 1px solid #444;
+            border-radius: 4px;
+            background: #222;
+            color: #fff;
         }
+
         .auth-form button {
             padding: 10px;
             width: 100%;
+            border: none;
+            border-radius: 4px;
+            background: #007bff;
+            color: #fff;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .auth-form button:hover {
+            background: #0056b3;
+        }
+
+        /* Style for form elements */
+        form {
+            margin: 20px 0;
+        }
+
+        label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+
+        select, button {
+            margin: 5px 0;
+            padding: 10px;
+            width: 100%;
+            border: 1px solid #444;
+            border-radius: 4px;
+            background: #222;
+            color: #fff;
+        }
+
+        select:focus, button:focus {
+            outline: none;
+            box-shadow: 0 0 5px #007bff;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+
+        /* Card style for group items */
+        #groupList {
+            margin-top: 20px;
+        }
+
+        .group-item {
+            border: 1px solid #444;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease, background 0.3s ease;
+        }
+
+        .group-item:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.02);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            #mainContent {
+                padding: 10px;
+            }
+
+            .auth-form, form, #groupList {
+                padding: 10px;
+            }
+
+            .auth-form input, .auth-form button, select, button {
+                font-size: 16px;
+            }
         }
     </style>
 </head>
 <body>
     <h1>Titan LFG</h1>
-    
+
     <!-- Authentication Forms -->
-    <div class="auth-form">
+    <div class="auth-form" id="authForm">
         <h2>Register</h2>
         <input type="email" id="registerEmail" placeholder="Email" />
         <input type="password" id="registerPassword" placeholder="Password" />
         <button onclick="register()">Register</button>
-    </div>
-    
-    <div class="auth-form">
+
         <h2>Login</h2>
         <input type="email" id="loginEmail" placeholder="Email" />
         <input type="password" id="loginPassword" placeholder="Password" />
@@ -50,7 +148,7 @@
     </div>
 
     <!-- Main content for group creation -->
-    <div id="mainContent" style="display: none;">
+    <div id="mainContent">
         <form id="lfgForm">
             <button type="button" onclick="createGroup()">Create Group</button>
             <button type="button" onclick="selectMission('Void Farming')">Void Farming</button>
@@ -122,6 +220,7 @@
                     // Registration successful
                     alert('Registration successful!');
                     document.getElementById('mainContent').style.display = 'block';
+                    document.getElementById('authForm').style.display = 'none';
                 })
                 .catch((error) => {
                     // Handle Errors here.
@@ -138,6 +237,7 @@
                     // Login successful
                     alert('Login successful!');
                     document.getElementById('mainContent').style.display = 'block';
+                    document.getElementById('authForm').style.display = 'none';
                 })
                 .catch((error) => {
                     // Handle Errors here.
@@ -145,80 +245,46 @@
                 });
         }
 
-        // Function to handle the 'Create Group' button click
+        // Function to create a group
         window.createGroup = async function() {
             const missionType = document.getElementById('missionType').value;
             const missionLevel = document.getElementById('missionLevel').value;
-            if (!missionType || !missionLevel) {
-                alert('Please select both a mission type and objective.');
-                return;
+            const user = auth.currentUser;
+            if (user) {
+                try {
+                    await addDoc(collection(db, 'groups'), {
+                        missionType: missionType,
+                        missionLevel: missionLevel,
+                        user: user.email,
+                        createdAt: new Date()
+                    });
+                    alert('Group created successfully!');
+                    displayGroups(); // Refresh the list of groups
+                } catch (e) {
+                    alert('Error adding group: ' + e.message);
+                }
+            } else {
+                alert('You must be logged in to create a group.');
             }
-
-            const group = {
-                type: missionType,
-                level: missionLevel,
-                timestamp: new Date()
-            };
-
-            try {
-                await addDoc(collection(db, "groups"), group);
-                alert('Group created successfully!');
-            } catch (error) {
-                alert('Error: ' + error.message);
-            }
         }
 
-        // Function to handle the 'Donate' button click
-        window.donate = function() {
-            alert('Coming Soon');
-            // Add any additional logic for donation here
-        }
-
-        // Function to handle mission selection and update the levels
-        window.selectMission = function(missionType) {
-            document.getElementById('missionType').value = missionType;
-            updateLevels();
-        }
-
-        // Function to update mission levels based on selected mission type
-        function updateLevels() {
-            const missionType = document.getElementById('missionType').value;
-            const missionLevel = document.getElementById('missionLevel');
-            missionLevel.innerHTML = ''; // Clear existing options
-
-            levels[missionType].forEach(level => {
-                const option = document.createElement('option');
-                option.value = level;
-                option.textContent = level;
-                missionLevel.appendChild(option);
-            });
-        }
-
-        // Function to display the list of groups
-        async function displayGroups() {
-            const groupList = document.getElementById('groupList');
-            groupList.innerHTML = '<h2>Recently Created Groups</h2>'; // Reset list
-
-            // Query Firestore for groups, ordered by timestamp
-            const q = query(collection(db, "groups"), orderBy("timestamp", "desc"), limit(10));
-            onSnapshot(q, (querySnapshot) => {
-                querySnapshot.forEach((doc) => {
-                    const group = doc.data();
-                    const groupItem = document.createElement('div');
-                    groupItem.classList.add('group-item');
-                    groupItem.textContent = `${new Date(group.timestamp.seconds * 1000).toLocaleString()} - ${group.type} - ${group.level}`;
-                    groupList.appendChild(groupItem);
+        // Function to display groups
+        function displayGroups() {
+            const q = query(collection(db, 'groups'), orderBy('createdAt', 'desc'), limit(10));
+            onSnapshot(q, (snapshot) => {
+                const groupList = document.getElementById('groupList');
+                groupList.innerHTML = '<h2>Recently Created Groups</h2>'; // Clear previous entries
+                snapshot.forEach((doc) => {
+                    const groupData = doc.data();
+                    const div = document.createElement('div');
+                    div.className = 'group-item';
+                    div.textContent = `Mission Type: ${groupData.missionType}, Objective: ${groupData.missionLevel}, Created By: ${groupData.user}`;
+                    groupList.appendChild(div);
                 });
             });
         }
 
-        // Initialize the mission levels for the default selected mission type
-        updateLevels();
-
-        // Set an interval to check and update the list every minute
-        setInterval(displayGroups, 60000);
-
-        // Display the groups on page load
+        // Display groups on page load
         displayGroups();
     </script>
 </body>
