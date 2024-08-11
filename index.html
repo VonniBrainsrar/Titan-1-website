@@ -17,7 +17,7 @@
         }
 
         /* Center content and add padding */
-        #mainContent, #profileContent {
+        #mainContent {
             max-width: 800px;
             margin: 0 auto;
             background: rgba(0, 0, 0, 0.7);
@@ -37,19 +37,14 @@
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-            margin: 20px auto;
-            width: 300px; /* Set a fixed width for consistency */
+            margin: 20px 0;
         }
-
-        .auth-form h2 {
-            margin-bottom: 10px;
-        }
-
+        
         .auth-form input {
             display: block;
             margin: 10px 0;
             padding: 10px;
-            width: calc(100% - 22px); /* Full width minus padding */
+            width: 100%;
             border: 1px solid #444;
             border-radius: 4px;
             background: #222;
@@ -69,15 +64,6 @@
 
         .auth-form button:hover {
             background: #0056b3;
-        }
-
-        /* Profile styling */
-        #profileContent {
-            display: none;
-        }
-
-        #profileContent p {
-            font-size: 18px;
         }
 
         /* Style for form elements */
@@ -131,14 +117,12 @@
 
         /* Responsive Design */
         @media (max-width: 768px) {
-            #mainContent, #profileContent {
+            #mainContent {
                 padding: 10px;
             }
 
             .auth-form, form, #groupList {
                 padding: 10px;
-                width: 100%; /* Full width on smaller screens */
-                max-width: none; /* Remove max-width constraint */
             }
 
             .auth-form input, .auth-form button, select, button {
@@ -155,9 +139,8 @@
         <h2>Register</h2>
         <input type="email" id="registerEmail" placeholder="Email" />
         <input type="password" id="registerPassword" placeholder="Password" />
-        <input type="text" id="registerUsername" placeholder="Username" />
         <button onclick="register()">Register</button>
-        
+
         <h2>Login</h2>
         <input type="email" id="loginEmail" placeholder="Email" />
         <input type="password" id="loginPassword" placeholder="Password" />
@@ -165,7 +148,7 @@
     </div>
 
     <!-- Main content for group creation -->
-    <div id="mainContent" style="display: none;">
+    <div id="mainContent">
         <form id="lfgForm">
             <button type="button" onclick="createGroup()">Create Group</button>
             <button type="button" onclick="selectMission('Void Farming')">Void Farming</button>
@@ -199,14 +182,6 @@
         </div>
     </div>
 
-    <!-- Profile page -->
-    <div id="profileContent">
-        <h2>Profile</h2>
-        <p id="usernameDisplay">Username: </p>
-        <p id="emailDisplay">Email: </p>
-        <button onclick="logout()">Logout</button>
-    </div>
-
     <!-- Background music -->
     <audio id="backgroundMusic" autoplay loop>
         <source src="background-music.mp3" type="audio/mpeg">
@@ -217,8 +192,8 @@
     <script type="module">
         // Import the functions you need from the SDKs you need
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.6/firebase-app.js";
-        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/9.6.6/firebase-auth.js";
-        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, limit, doc, setDoc } from "https://www.gstatic.com/firebasejs/9.6.6/firebase-firestore.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.6.6/firebase-auth.js";
+        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/9.6.6/firebase-firestore.js";
 
         // Your web app's Firebase configuration
         const firebaseConfig = {
@@ -228,7 +203,7 @@
             storageBucket: "titan1lfg.appspot.com",
             messagingSenderId: "51631664886",
             appId: "1:51631664886:web:1f9660b9a81b3c945446d7",
-            measurementId: "G-VG05N7CS55"
+            measurementId: "G-VG05WVY53Q"
         };
 
         // Initialize Firebase
@@ -237,66 +212,37 @@
         const db = getFirestore(app);
 
         // Function to handle registration
-        window.register = async function() {
+        window.register = function() {
             const email = document.getElementById('registerEmail').value;
             const password = document.getElementById('registerPassword').value;
-            const username = document.getElementById('registerUsername').value;
-
-            try {
-                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-                const user = userCredential.user;
-
-                // Save the username in Firestore
-                await setDoc(doc(db, 'users', user.uid), {
-                    email: user.email,
-                    username: username
+            createUserWithEmailAndPassword(auth, email, password)
+                .then((userCredential) => {
+                    // Registration successful
+                    alert('Registration successful!');
+                    document.getElementById('mainContent').style.display = 'block';
+                    document.getElementById('authForm').style.display = 'none';
+                })
+                .catch((error) => {
+                    // Handle Errors here.
+                    alert('Error: ' + error.message);
                 });
-
-                alert('Registration successful!');
-                document.getElementById('mainContent').style.display = 'block';
-                document.getElementById('authForm').style.display = 'none';
-            } catch (error) {
-                alert('Error: ' + error.message);
-            }
         }
 
         // Function to handle login
-        window.login = async function() {
+        window.login = function() {
             const email = document.getElementById('loginEmail').value;
             const password = document.getElementById('loginPassword').value;
-
-            try {
-                const userCredential = await signInWithEmailAndPassword(auth, email, password);
-                const user = userCredential.user;
-
-                // Retrieve username from Firestore
-                const userDoc = await doc(db, 'users', user.uid).get();
-                const userData = userDoc.data();
-
-                // Display username and email
-                document.getElementById('usernameDisplay').textContent = `Username: ${userData.username}`;
-                document.getElementById('emailDisplay').textContent = `Email: ${user.email}`;
-                
-                alert('Login successful!');
-                document.getElementById('mainContent').style.display = 'block';
-                document.getElementById('profileContent').style.display = 'block';
-                document.getElementById('authForm').style.display = 'none';
-            } catch (error) {
-                alert('Error: ' + error.message);
-            }
-        }
-
-        // Function to log out
-        window.logout = async function() {
-            try {
-                await signOut(auth);
-                alert('Logged out successfully!');
-                document.getElementById('authForm').style.display = 'block';
-                document.getElementById('mainContent').style.display = 'none';
-                document.getElementById('profileContent').style.display = 'none';
-            } catch (error) {
-                alert('Error: ' + error.message);
-            }
+            signInWithEmailAndPassword(auth, email, password)
+                .then((userCredential) => {
+                    // Login successful
+                    alert('Login successful!');
+                    document.getElementById('mainContent').style.display = 'block';
+                    document.getElementById('authForm').style.display = 'none';
+                })
+                .catch((error) => {
+                    // Handle Errors here.
+                    alert('Error: ' + error.message);
+                });
         }
 
         // Function to create a group
@@ -337,45 +283,6 @@
                 });
             });
         }
-
-        // Function to update mission levels based on selected mission type
-        window.updateLevels = function() {
-            const missionType = document.getElementById('missionType').value;
-            const missionLevel = document.getElementById('missionLevel');
-            missionLevel.innerHTML = ''; // Clear existing options
-
-            if (levels[missionType]) {
-                levels[missionType].forEach(level => {
-                    const option = document.createElement('option');
-                    option.value = level;
-                    option.textContent = level;
-                    missionLevel.appendChild(option);
-                });
-            }
-        }
-
-        // Object storing the different mission types and their respective levels
-        const levels = {
-            "Void Farming": ['Fire', 'Electric', 'Ice', 'Toxic', 'Non-Attribute'],
-            "Calling of the Descendants": [
-                'Bio-Lab', 'Caligo Ossuary', 'Heart of the Fortress', 'Magister Lab', 
-                'Mystery\'s End', 'Old Mystery', 'Quarantine Zone', 'Seed Vault', 
-                'Sepulcher', 'Slumber Valley', 'The Asylum', 'The Chapel', 
-                'The Forgottense', 'The Haven', 'The Shelter', 'Unknown Laboratory'
-            ],
-            "Normal Void Battles": ['Grave Walker', 'Stunning Beauty', 'Executioner', 
-                                     'Dead Bride', 'Devourer', 'Pyromaniac', 
-                                     'Swamp Walker', 'Hanged Man'],
-            "Hard Void Battles": ['Executioner', 'Dead Bride', 'Devourer', 'Pyromaniac', 
-                                   'Swamp Walker', 'Obstructor', 'Frost Walker', 
-                                   'Molten Fortress'],
-            "Encrypted Vaults": ['Vault 1', 'Vault 2', 'Vault 3'], // Placeholder levels
-            "Zone Farming": ['Agna Desert', 'Echo Swamp', 'Fortress', 'Haigos', 
-                             'Kingston', 'Sterile Land', 'Vespers', 'White Night Gulch']
-        };
-
-        // Initialize the mission levels for the default selected mission type
-        updateLevels();
 
         // Display groups on page load
         displayGroups();
