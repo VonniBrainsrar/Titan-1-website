@@ -41,19 +41,31 @@
     </audio>
 
     <script>
+        // Object storing the different mission types and their respective levels
         const levels = {
             "Void Farming": ['Fire', 'Electric', 'Ice', 'Toxic', 'Non-Attribute'],
-            "Calling of the Descendants": ['Bio-Lab', 'Caligo Ossuary', 'Heart of the Fortress', 'Magister Lab', 'Mystery\'s End', 'Old Mystery', 'Quarantine Zone', 'Seed Vault', 'Sepulcher', 'Slumber Valley', 'The Asylum', 'The Chapel', 'The Forgottense', 'The Haven', 'The Shelter', 'Unknown Laboratory'],
-            "Normal Void Battles": ['Grave Walker', 'Stunning Beauty', 'Executioner', 'Dead Bride', 'Devourer', 'Pyromaniac', 'Swamp Walker', 'Hanged Man'],
-            "Hard Void Battles": ['Executioner', 'Dead Bride', 'Devourer', 'Pyromaniac', 'Swamp Walker', 'Obstructor', 'Frost Walker', 'Molten Fortress'],
-            "Encrypted Vaults": ['Vault 1', 'Vault 2', 'Vault 3'], // Add appropriate levels for this mission type
-            "Zone Farming": ['Agna Desert', 'Echo Swamp', 'Fortress', 'Haigos', 'Kingston', 'Sterile Land', 'Vespers', 'White Night Gulch']
+            "Calling of the Descendants": [
+                'Bio-Lab', 'Caligo Ossuary', 'Heart of the Fortress', 'Magister Lab', 
+                'Mystery\'s End', 'Old Mystery', 'Quarantine Zone', 'Seed Vault', 
+                'Sepulcher', 'Slumber Valley', 'The Asylum', 'The Chapel', 
+                'The Forgottense', 'The Haven', 'The Shelter', 'Unknown Laboratory'
+            ],
+            "Normal Void Battles": ['Grave Walker', 'Stunning Beauty', 'Executioner', 
+                                     'Dead Bride', 'Devourer', 'Pyromaniac', 
+                                     'Swamp Walker', 'Hanged Man'],
+            "Hard Void Battles": ['Executioner', 'Dead Bride', 'Devourer', 'Pyromaniac', 
+                                   'Swamp Walker', 'Obstructor', 'Frost Walker', 
+                                   'Molten Fortress'],
+            "Encrypted Vaults": ['Vault 1', 'Vault 2', 'Vault 3'], // Placeholder levels
+            "Zone Farming": ['Agna Desert', 'Echo Swamp', 'Fortress', 'Haigos', 
+                             'Kingston', 'Sterile Land', 'Vespers', 'White Night Gulch']
         };
 
+        // Function to update mission levels based on selected mission type
         function updateLevels() {
             const missionType = document.getElementById('missionType').value;
             const missionLevel = document.getElementById('missionLevel');
-            missionLevel.innerHTML = '';
+            missionLevel.innerHTML = ''; // Clear existing options
 
             levels[missionType].forEach(level => {
                 const option = document.createElement('option');
@@ -63,22 +75,25 @@
             });
         }
 
+        // Function to handle the 'Create Group' button click
         function createGroup() {
-            // Add your create group logic here
             alert('Create Group button clicked!');
+            // Add any additional logic for creating a group here
         }
 
+        // Function to handle the 'Donate' button click
         function donate() {
-            // Add your donate logic here
             alert('Coming Soon');
+            // Add any additional logic for donation here
         }
 
+        // Function to handle mission selection and update the levels
         function selectMission(missionType) {
             document.getElementById('missionType').value = missionType;
             updateLevels();
         }
 
-        // Initialize levels for the default selected mission type
+        // Initialize the mission levels for the default selected mission type
         updateLevels();
     </script>
 </body>
