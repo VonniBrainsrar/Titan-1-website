@@ -1,51 +1,53 @@
 body {
-    font-family: Arial, sans-serif;
+    background-image: url('background-image.jpg'); /* Path to your background image */
+    background-size: cover; /* Ensure the image covers the entire background */
+    background-position: center; /* Center the image */
+    color: white; /* Text color for better contrast */
+    font-family: Arial, sans-serif; /* Font style */
     margin: 0;
     padding: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: #f0f0f0;
+    height: 100vh; /* Ensure body takes full viewport height */
 }
 
 h1 {
+    text-align: center;
     margin-top: 20px;
 }
 
 form {
-    margin: 20px 0;
-}
-
-input {
-    margin: 5px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.5); /* Semi-transparent background for better readability */
+    padding: 20px;
+    border-radius: 8px;
+    margin: 20px auto; /* Center form horizontally and add margin */
+    max-width: 600px; /* Restrict form width */
 }
 
 button {
+    margin: 5px;
     padding: 10px 20px;
-    border: none;
-    background-color: #28a745;
+    font-size: 16px;
+    background-color: #333;
     color: white;
+    border: none;
     border-radius: 5px;
     cursor: pointer;
 }
 
 button:hover {
-    background-color: #218838;
+    background-color: #555;
 }
 
-#groups {
-    margin-top: 20px;
-    width: 80%;
-    max-width: 600px;
-}
-
-.group {
-    background-color: white;
-    padding: 15px;
+label {
     margin: 10px 0;
+    font-size: 18px;
+}
+
+select {
+    padding: 5px;
+    font-size: 16px;
     border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border: 1px solid #ccc;
 }
