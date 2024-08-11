@@ -1,0 +1,30 @@
+console.log("My JS!")
+// Register User
+document.getElementById('registerForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    const email = document.getElementById('registerEmail').value;
+    const password = document.getElementById('registerPassword').value;
+
+    firebase.auth().createUserWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+            alert('User registered successfully!');
+        })
+        .catch((error) => {
+            alert('Error: ' + error.message);
+        });
+});
+
+// Login User
+document.getElementById('loginForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    const email = document.getElementById('loginEmail').value;
+    const password = document.getElementById('loginPassword').value;
+
+    firebase.auth().signInWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+            alert('User logged in successfully!');
+        })
+        .catch((error) => {
+            alert('Error: ' + error.message);
+        });
+});

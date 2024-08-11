@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LFG Site</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Looking For Group</h1>
+    <form id="lfgForm">
+        <input type="text" id="game" placeholder="Game" required>
+        <input type="text" id="description" placeholder="Description" required>
+        <button type="submit">Create Group</button>
+    </form>
+    <div id="groups"></div>
+    <script src="script.js"></script>
+</body>
+</html>
