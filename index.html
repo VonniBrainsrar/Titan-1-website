@@ -14,6 +14,7 @@
         <button type="button" onclick="selectMission('Calling of the Descendants')">Calling of the Descendants</button>
         <button type="button" onclick="selectMission('Infiltration Operation')">Infiltration Operation</button>
         <button type="button" onclick="selectMission('Encrypted Vaults')">Encrypted Vaults</button>
+        <button type="button" onclick="selectMission('Zone Farming')">Zone Farming</button>
         <button type="button" onclick="selectMission('Normal Void Battles')">Normal Void Battles</button>
         <button type="button" onclick="selectMission('Hard Void Battles')">Hard Void Battles</button>
         <button type="button" onclick="donate()">Donate</button>
@@ -24,7 +25,7 @@
             <option value="Calling of the Descendants">Calling of the Descendants</option>
             <option value="Normal Void Battles">Normal Void Battles</option>
             <option value="Hard Void Battles">Hard Void Battles</option>
-            <option value="Encrypted Vaults>Encrypted Vaults</option>
+            <option value="Encrypted Vaults">Encrypted Vaults</option>
         </select>
 
         <label for="missionLevel">What is your Objective:</label>
@@ -33,13 +34,20 @@
         </select>
     </form>
 
+    <!-- Background music -->
+    <audio id="backgroundMusic" autoplay loop>
+        <source src="background-music.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
     <script>
         const levels = {
             "Void Farming": ['Fire', 'Electric', 'Ice', 'Toxic', 'Non-Attribute'],
-            "Calling of the Descendants": ['Bio-Lab', 'Caligo Ossuary', 'Heart of the Fortress, 'Magister Lab', 'Mystery's End', 'Old Mystery', 'Qurantine Zone', 'Seed Vault', 'Sepulcher', 'Slumber Valley', 'The Asylum', 'The Chapel', 'The Forgottense', 'The Haven', 'The Shelter', 'Unknown Labortory'],
-            "Normal Void Battles": ['Grave Walker', 'Stunning Beauty', 'Executioner', 'Dead Bride', 'Devouer', 'Pyromaniac', 'Swamp Walker', 'Hanged Man'],
-            "Hard Void Battles": ['Executioner', 'Dead Bride', 'Devouer', 'Pyromaniac', 'Swamp Walker', 'Obstructer', 'Frost Walker', 'Molten Fortress'],
-            "Special Operation": ['Level 4-1', 'Level 4-2', 'Level 4-3']
+            "Calling of the Descendants": ['Bio-Lab', 'Caligo Ossuary', 'Heart of the Fortress', 'Magister Lab', 'Mystery\'s End', 'Old Mystery', 'Quarantine Zone', 'Seed Vault', 'Sepulcher', 'Slumber Valley', 'The Asylum', 'The Chapel', 'The Forgottense', 'The Haven', 'The Shelter', 'Unknown Laboratory'],
+            "Normal Void Battles": ['Grave Walker', 'Stunning Beauty', 'Executioner', 'Dead Bride', 'Devourer', 'Pyromaniac', 'Swamp Walker', 'Hanged Man'],
+            "Hard Void Battles": ['Executioner', 'Dead Bride', 'Devourer', 'Pyromaniac', 'Swamp Walker', 'Obstructor', 'Frost Walker', 'Molten Fortress'],
+            "Encrypted Vaults": ['Vault 1', 'Vault 2', 'Vault 3'], // Add appropriate levels for this mission type
+            "Zone Farming": ['Agna Desert', 'Echo Swamp', 'Fortress', 'Haigos', 'Kingston', 'Sterile Land', 'Vespers', 'White Night Gulch']
         };
 
         function updateLevels() {
