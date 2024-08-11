@@ -148,7 +148,7 @@
     </div>
 
     <!-- Main content for group creation -->
-    <div id="mainContent">
+    <div id="mainContent" style="display: none;">
         <form id="lfgForm">
             <button type="button" onclick="createGroup()">Create Group</button>
             <button type="button" onclick="selectMission('Void Farming')">Void Farming</button>
@@ -161,6 +161,7 @@
             
             <label for="missionType">Select a Mission Type:</label>
             <select id="missionType" onchange="updateLevels()">
+                <option value="">Select Mission Type</option>
                 <option value="Void Farming">Void Farming</option>
                 <option value="Calling of the Descendants">Calling of the Descendants</option>
                 <option value="Normal Void Battles">Normal Void Battles</option>
@@ -171,7 +172,7 @@
 
             <label for="missionLevel">What is your Objective:</label>
             <select id="missionLevel">
-                <!-- Levels will be populated here -->
+                <option value="">Select Mission Level</option>
             </select>
         </form>
 
@@ -190,12 +191,10 @@
 
     <!-- Firebase SDK -->
     <script type="module">
-        // Import the functions you need from the SDKs you need
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.6/firebase-app.js";
         import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.6.6/firebase-auth.js";
         import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/9.6.6/firebase-firestore.js";
 
-        // Your web app's Firebase configuration
         const firebaseConfig = {
             apiKey: "AIzaSyDkXMlEkORvvfH-kBYbBLAfasBoCsHCQmQ",
             authDomain: "titan1lfg.firebaseapp.com",
@@ -206,86 +205,107 @@
             measurementId: "G-VG05WVY53Q"
         };
 
-        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // Function to handle registration
         window.register = function() {
             const email = document.getElementById('registerEmail').value;
             const password = document.getElementById('registerPassword').value;
             createUserWithEmailAndPassword(auth, email, password)
                 .then((userCredential) => {
-                    // Registration successful
                     alert('Registration successful!');
                     document.getElementById('mainContent').style.display = 'block';
                     document.getElementById('authForm').style.display = 'none';
                 })
                 .catch((error) => {
-                    // Handle Errors here.
                     alert('Error: ' + error.message);
                 });
         }
 
-        // Function to handle login
         window.login = function() {
             const email = document.getElementById('loginEmail').value;
             const password = document.getElementById('loginPassword').value;
             signInWithEmailAndPassword(auth, email, password)
                 .then((userCredential) => {
-                    // Login successful
                     alert('Login successful!');
                     document.getElementById('mainContent').style.display = 'block';
                     document.getElementById('authForm').style.display = 'none';
                 })
                 .catch((error) => {
-                    // Handle Errors here.
                     alert('Error: ' + error.message);
                 });
         }
 
-        // Function to create a group
         window.createGroup = async function() {
             const missionType = document.getElementById('missionType').value;
             const missionLevel = document.getElementById('missionLevel').value;
-            const user = auth.currentUser;
-            if (user) {
-                try {
-                    await addDoc(collection(db, 'groups'), {
-                        missionType: missionType,
-                        missionLevel: missionLevel,
-                        user: user.email,
-                        createdAt: new Date()
-                    });
-                    alert('Group created successfully!');
-                    displayGroups(); // Refresh the list of groups
-                } catch (e) {
-                    alert('Error adding group: ' + e.message);
-                }
-            } else {
-                alert('You must be logged in to create a group.');
+            if (!missionType || !missionLevel) {
+                alert('Please select both mission type and mission level.');
+                return;
+            }
+
+            try {
+                await addDoc(collection(db, "groups"), {
+                    type: missionType,
+                    level: missionLevel,
+                    createdAt: new Date()
+                });
+                alert('Group created successfully!');
+                loadGroups();
+            } catch (error) {
+                alert('Error: ' + error.message);
             }
         }
 
-        // Function to display groups
-        function displayGroups() {
-            const q = query(collection(db, 'groups'), orderBy('createdAt', 'desc'), limit(10));
-            onSnapshot(q, (snapshot) => {
+        window.selectMission = function(type) {
+            document.getElementById('missionType').value = type;
+            updateLevels();
+        }
+
+        window.donate = function() {
+            alert('Thank you for your donation!');
+        }
+
+        function updateLevels() {
+            const missionType = document.getElementById('missionType').value;
+            const levels = {
+                'Void Farming': ['Level 1', 'Level 2', 'Level 3'],
+                'Calling of the Descendants': ['Easy', 'Medium', 'Hard'],
+                'Normal Void Battles': ['Beginner', 'Intermediate', 'Advanced'],
+                'Hard Void Battles': ['Hard', 'Very Hard', 'Extreme'],
+                'Encrypted Vaults': ['Vault 1', 'Vault 2', 'Vault 3'],
+                'Zone Farming': ['Zone 1', 'Zone 2', 'Zone 3']
+            };
+
+            const levelSelect = document.getElementById('missionLevel');
+            levelSelect.innerHTML = '<option value="">Select Mission Level</option>'; // Clear previous options
+
+            if (levels[missionType]) {
+                levels[missionType].forEach(level => {
+                    const option = document.createElement('option');
+                    option.value = level;
+                    option.textContent = level;
+                    levelSelect.appendChild(option);
+                });
+            }
+        }
+
+        async function loadGroups() {
+            const q = query(collection(db, "groups"), orderBy("createdAt", "desc"), limit(10));
+            onSnapshot(q, (querySnapshot) => {
                 const groupList = document.getElementById('groupList');
-                groupList.innerHTML = '<h2>Recently Created Groups</h2>'; // Clear previous entries
-                snapshot.forEach((doc) => {
+                groupList.innerHTML = '<h2>Recently Created Groups</h2>'; // Clear previous list
+
+                querySnapshot.forEach((doc) => {
                     const groupData = doc.data();
-                    const div = document.createElement('div');
-                    div.className = 'group-item';
-                    div.textContent = `Mission Type: ${groupData.missionType}, Objective: ${groupData.missionLevel}, Created By: ${groupData.user}`;
-                    groupList.appendChild(div);
+                    const groupItem = document.createElement('div');
+                    groupItem.className = 'group-item';
+                    groupItem.innerHTML = `<strong>Type:</strong> ${groupData.type} <br> <strong>Level:</strong> ${groupData.level} <br> <strong>Created:</strong> ${new Date(groupData.createdAt.seconds * 1000).toLocaleString()}`;
+                    groupList.appendChild(groupItem);
                 });
             });
         }
-
-        // Display groups on page load
-        displayGroups();
     </script>
 </body>
 </html>
