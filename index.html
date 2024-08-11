@@ -3,163 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LFG Site</title>
+    <title>Titan LFG</title>
     <link rel="stylesheet" href="styles.css">
     <style>
-        /* Basic reset and body styling */
+        /* General Styles */
         body {
-            margin: 0;
             font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #1e3c72, #2a5298);
-            color: #fff;
-            padding: 20px;
-            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            background-color: #121212; /* Dark background */
+            color: #e0e0e0; /* Light text color */
         }
-
-        /* Center content and add padding */
+        h1 {
+            text-align: center;
+            margin-top: 20px;
+            color: #1e90ff; /* Blue color */
+        }
+        /* Main Content Styles */
         #mainContent {
             max-width: 800px;
-            margin: 0 auto;
-            background: rgba(0, 0, 0, 0.7);
+            margin: 20px auto;
             padding: 20px;
-            border-radius: 8px;
+            background-color: #1f1f1f; /* Dark background for main content */
+            box-shadow: 0 0 10px rgba(0,0,0,0.3); /* Slightly darker shadow */
+            border-radius: 5px;
+            border: 1px solid #555; /* Grey border */
         }
-
-        /* Style for headings */
-        h1, h2 {
-            text-align: center;
-            margin: 0;
-        }
-
-        /* Auth form styling */
-        .auth-form {
-            background: rgba(0, 0, 0, 0.8);
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-            margin: 20px 0;
-        }
-        
-        .auth-form input {
-            display: block;
-            margin: 10px 0;
-            padding: 10px;
-            width: 100%;
-            border: 1px solid #444;
-            border-radius: 4px;
-            background: #222;
-            color: #fff;
-        }
-
-        .auth-form button {
-            padding: 10px;
-            width: 100%;
-            border: none;
-            border-radius: 4px;
-            background: #007bff;
-            color: #fff;
-            cursor: pointer;
-            transition: background 0.3s ease;
-        }
-
-        .auth-form button:hover {
-            background: #0056b3;
-        }
-
-        /* Style for form elements */
-        form {
-            margin: 20px 0;
-        }
-
-        label {
-            display: block;
-            margin: 10px 0 5px;
-        }
-
-        select, button {
-            margin: 5px 0;
-            padding: 10px;
-            width: 100%;
-            border: 1px solid #444;
-            border-radius: 4px;
-            background: #222;
-            color: #fff;
-        }
-
-        select:focus, button:focus {
-            outline: none;
-            box-shadow: 0 0 5px #007bff;
-        }
-
-        button:hover {
-            background: #0056b3;
-        }
-
-        /* Card style for group items */
-        #groupList {
+        #groups {
             margin-top: 20px;
         }
-
         .group-item {
-            border: 1px solid #444;
             padding: 10px;
-            margin-bottom: 10px;
-            border-radius: 8px;
-            background: rgba(255, 255, 255, 0.1);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-            transition: transform 0.3s ease, background 0.3s ease;
+            border-bottom: 1px solid #555; /* Grey border for group items */
         }
-
-        .group-item:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: scale(1.02);
+        .group-item:last-child {
+            border-bottom: none;
         }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            #mainContent {
-                padding: 10px;
-            }
-
-            .auth-form, form, #groupList {
-                padding: 10px;
-            }
-
-            .auth-form input, .auth-form button, select, button {
-                font-size: 16px;
-            }
+        /* Profile Page Styles */
+        #profileContent {
+            display: none; /* Hidden initially */
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #1f1f1f; /* Dark background for profile */
+            box-shadow: 0 0 10px rgba(0,0,0,0.3); /* Slightly darker shadow */
+            border-radius: 5px;
+            border: 1px solid #555; /* Grey border */
+        }
+        /* Background Music */
+        #backgroundMusic {
+            display: none; /* Hidden in the UI */
         }
     </style>
 </head>
 <body>
     <h1>Titan LFG</h1>
 
-    <!-- Authentication Forms -->
-    <div class="auth-form" id="authForm">
-        <h2>Register</h2>
-        <input type="email" id="registerEmail" placeholder="Email" />
-        <input type="password" id="registerPassword" placeholder="Password" />
-        <button onclick="register()">Register</button>
-
-        <h2>Login</h2>
-        <input type="email" id="loginEmail" placeholder="Email" />
-        <input type="password" id="loginPassword" placeholder="Password" />
-        <button onclick="login()">Login</button>
-    </div>
-
     <!-- Main content for group creation -->
-    <div id="mainContent" style="display: none;">
+    <div id="mainContent">
         <form id="lfgForm">
-            <button type="button" onclick="createGroup()">Create Group</button>
-            <button type="button" onclick="selectMission('Void Farming')">Void Farming</button>
-            <button type="button" onclick="selectMission('Calling of the Descendants')">Calling of the Descendants</button>
-            <button type="button" onclick="selectMission('Encrypted Vaults')">Encrypted Vaults</button>
-            <button type="button" onclick="selectMission('Zone Farming')">Zone Farming</button>
-            <button type="button" onclick="selectMission('Normal Void Battles')">Normal Void Battles</button>
-            <button type="button" onclick="selectMission('Hard Void Battles')">Hard Void Battles</button>
-            <button type="button" onclick="donate()">Donate</button>
-            
-            <label for="missionType">Select a Mission Type:</label>
+            <label for="game">Game:</label>
+            <input type="text" id="game" placeholder="Game Name" required />
+
+            <label for="missionType">Mission Type:</label>
             <select id="missionType" onchange="updateLevels()">
                 <option value="">Select Mission Type</option>
                 <option value="Void Farming">Void Farming</option>
@@ -170,17 +76,30 @@
                 <option value="Zone Farming">Zone Farming</option>
             </select>
 
-            <label for="missionLevel">What is your Objective:</label>
+            <label for="missionLevel">Mission Level:</label>
             <select id="missionLevel">
                 <option value="">Select Mission Level</option>
             </select>
+
+            <label for="description">Description:</label>
+            <textarea id="description" placeholder="Description" required></textarea>
+
+            <button type="submit">Create Group</button>
         </form>
 
         <!-- Recently created groups list -->
-        <div id="groupList">
+        <div id="groups">
             <h2>Recently Created Groups</h2>
             <!-- Groups will be listed here -->
         </div>
+    </div>
+
+    <!-- Profile page -->
+    <div id="profileContent">
+        <h2>Profile</h2>
+        <p id="usernameDisplay"></p>
+        <p id="emailDisplay"></p>
+        <button type="button" onclick="logout()">Logout</button>
     </div>
 
     <!-- Background music -->
@@ -192,8 +111,8 @@
     <!-- Firebase SDK -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.6/firebase-app.js";
-        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.6.6/firebase-auth.js";
-        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/9.6.6/firebase-firestore.js";
+        import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/9.6.6/firebase-auth.js";
+        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, limit, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.6.6/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyDkXMlEkORvvfH-kBYbBLAfasBoCsHCQmQ",
@@ -202,59 +121,39 @@
             storageBucket: "titan1lfg.appspot.com",
             messagingSenderId: "51631664886",
             appId: "1:51631664886:web:1f9660b9a81b3c945446d7",
-            measurementId: "G-VG05WVY53Q"
+            measurementId: "G-VG05N7CS55"
         };
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        window.register = function() {
-            const email = document.getElementById('registerEmail').value;
-            const password = document.getElementById('registerPassword').value;
-            createUserWithEmailAndPassword(auth, email, password)
-                .then((userCredential) => {
-                    alert('Registration successful!');
-                    document.getElementById('mainContent').style.display = 'block';
-                    document.getElementById('authForm').style.display = 'none';
-                })
-                .catch((error) => {
-                    alert('Error: ' + error.message);
-                });
-        }
-
-        window.login = function() {
-            const email = document.getElementById('loginEmail').value;
-            const password = document.getElementById('loginPassword').value;
-            signInWithEmailAndPassword(auth, email, password)
-                .then((userCredential) => {
-                    alert('Login successful!');
-                    document.getElementById('mainContent').style.display = 'block';
-                    document.getElementById('authForm').style.display = 'none';
-                })
-                .catch((error) => {
-                    alert('Error: ' + error.message);
-                });
+        window.logout = async function() {
+            try {
+                await signOut(auth);
+                alert('Logged out successfully!');
+                document.getElementById('profileContent').style.display = 'none';
+                document.getElementById('mainContent').style.display = 'none';
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
         }
 
         window.createGroup = async function() {
-            const missionType = document.getElementById('missionType').value;
-            const missionLevel = document.getElementById('missionLevel').value;
+            const game = document.getElementById('game').value;
+            const description = document.getElementById('description').value;
             const user = auth.currentUser;
-            if (!missionType || !missionLevel) {
-                alert('Please select both mission type and mission level.');
-                return;
-            }
+
             if (user) {
                 try {
-                    await addDoc(collection(db, 'groups'), {
-                        type: missionType,
-                        level: missionLevel,
+                    await addDoc(collection(db, 'lfgGroups'), {
+                        game: game,
+                        description: description,
                         user: user.email,
                         createdAt: new Date()
                     });
                     alert('Group created successfully!');
-                    loadGroups(); // Refresh the list of groups
+                    document.getElementById('lfgForm').reset();
                 } catch (e) {
                     alert('Error adding group: ' + e.message);
                 }
@@ -263,66 +162,64 @@
             }
         }
 
-        window.selectMission = function(type) {
-            document.getElementById('missionType').value = type;
-            updateLevels();
-        }
-
-        window.donate = function() {
-            alert('Thank you for your donation!');
-        }
-
-        function updateLevels() {
-            const missionType = document.getElementById('missionType').value;
-            const levels = {
-                'Void Farming': ['Fire', 'Ice', 'Electric' 'Void'],
-                'Calling of the Descendants': [
+        const levels = {
+            'Void Farming': ['Fire', 'Ice', 'Electric', 'Void'],
+            'Calling of the Descendants': [
                 'Bio-Lab', 'Caligo Ossuary', 'Heart of the Fortress', 'Magister Lab', 
                 'Mystery\'s End', 'Old Mystery', 'Quarantine Zone', 'Seed Vault', 
                 'Sepulcher', 'Slumber Valley', 'The Asylum', 'The Chapel', 
                 'The Forgottense', 'The Haven', 'The Shelter', 'Unknown Laboratory'
             ],
-                'Normal Void Battles': ['Grave Walker', 'Stunning Beauty', 'Executioner', 
+            'Normal Void Battles': ['Grave Walker', 'Stunning Beauty', 'Executioner', 
                                      'Dead Bride', 'Devourer', 'Pyromaniac', 
                                      'Swamp Walker', 'Hanged Man'],
-                'Hard Void Battles': ['Executioner', 'Dead Bride', 'Devourer', 'Pyromaniac', 
+            'Hard Void Battles': ['Executioner', 'Dead Bride', 'Devourer', 'Pyromaniac', 
                                    'Swamp Walker', 'Obstructor', 'Frost Walker', 
                                    'Molten Fortress'],
-                'Encrypted Vaults': ['Vault 1', 'Vault 2', 'Vault 3'],
-                'Zone Farming': 'Agna Desert', 'Echo Swamp', 'Fortress', 'Haigos', 
+            'Encrypted Vaults': ['Vault 1', 'Vault 2', 'Vault 3'],
+            'Zone Farming': ['Agna Desert', 'Echo Swamp', 'Fortress', 'Haigos', 
                              'Kingston', 'Sterile Land', 'Vespers', 'White Night Gulch']
-            };
+        };
 
-            const levelSelect = document.getElementById('missionLevel');
-            levelSelect.innerHTML = '<option value="">Select Mission Level</option>'; // Clear previous options
+        function updateLevels() {
+            const missionType = document.getElementById('missionType').value;
+            const missionLevel = document.getElementById('missionLevel');
+            missionLevel.innerHTML = '<option value="">Select Mission Level</option>'; // Reset dropdown
 
             if (levels[missionType]) {
                 levels[missionType].forEach(level => {
                     const option = document.createElement('option');
                     option.value = level;
                     option.textContent = level;
-                    levelSelect.appendChild(option);
+                    missionLevel.appendChild(option);
                 });
             }
         }
 
-        async function loadGroups() {
-            const q = query(collection(db, 'groups'), orderBy('createdAt', 'desc'), limit(10));
+        function displayLFGGroups() {
+            const q = query(collection(db, 'lfgGroups'), orderBy('createdAt', 'desc'), limit(10));
             onSnapshot(q, (snapshot) => {
-                const groupList = document.getElementById('groupList');
-                groupList.innerHTML = '<h2>Recently Created Groups</h2>'; // Clear previous entries
+                const groupList = document.getElementById('groups');
+                groupList.innerHTML = '<h2>Recently Created Groups</h2>';
                 snapshot.forEach((doc) => {
                     const groupData = doc.data();
                     const div = document.createElement('div');
                     div.className = 'group-item';
-                    div.innerHTML = `<strong>Type:</strong> ${groupData.type} <br> <strong>Level:</strong> ${groupData.level} <br> <strong>Created:</strong> ${new Date(groupData.createdAt.seconds * 1000).toLocaleString()}`;
+                    div.innerHTML = `<h2>${groupData.game}</h2><p>${groupData.description}</p>`;
                     groupList.appendChild(div);
                 });
             });
         }
 
-        // Display groups on page load
-        loadGroups();
+        window.onload = function() {
+            displayLFGGroups();
+        };
+
+        document.getElementById('lfgForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            await window.createGroup();
+            displayLFGGroups(); // Refresh the list after creating a group
+        });
     </script>
 </body>
 </html>
