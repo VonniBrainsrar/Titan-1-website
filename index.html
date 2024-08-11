@@ -9,12 +9,12 @@
 <body>
     <h1>Titan LFG</h1>
     <form id="lfgForm">
-        <button type="submit">Create Group</button>
-        <button type="submit">Donate</button>
-        <button type="submit">Void Farming</button>
-        <button type="submit">Calling of the Descendants</button>
-        <button type="submit">Infiltration Operation</button>
-        <button type="submit">Special Operation</button>
+        <button type="button" onclick="createGroup()">Create Group</button>
+        <button type="button" onclick="donate()">Donate</button>
+        <button type="button" onclick="selectMission('Void Farming')">Void Farming</button>
+        <button type="button" onclick="selectMission('Calling of the Descendants')">Calling of the Descendants</button>
+        <button type="button" onclick="selectMission('Infiltration Operation')">Infiltration Operation</button>
+        <button type="button" onclick="selectMission('Special Operation')">Special Operation</button>
         
         <label for="missionType">Select a Mission Type:</label>
         <select id="missionType" onchange="updateLevels()">
@@ -49,6 +49,21 @@
                 option.textContent = level;
                 missionLevel.appendChild(option);
             });
+        }
+
+        function createGroup() {
+            // Add your create group logic here
+            alert('Create Group button clicked!');
+        }
+
+        function donate() {
+            // Add your donate logic here
+            alert('Coming Soon');
+        }
+
+        function selectMission(missionType) {
+            document.getElementById('missionType').value = missionType;
+            updateLevels();
         }
 
         // Initialize levels for the default selected mission type
