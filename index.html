@@ -188,7 +188,7 @@
                 <select id="platform" name="platform">
                     <option value="steam">Steam</option>
                     <option value="xbox">Xbox</option>
-                    <option value="pc">PC</option>
+                    <option value="ps4">PS4</option>
                 </select>
             </div>
             <div class="form-group">
@@ -306,6 +306,10 @@
                 return;
             }
 
+            // Save profile data to session storage (optional)
+            sessionStorage.setItem('username', username);
+            sessionStorage.setItem('platform', platform);
+
             document.getElementById('profileFormContainer').classList.add('hidden');
             document.getElementById('mainContent').classList.remove('hidden');
         }
@@ -329,6 +333,9 @@
             const missionLevel = document.getElementById(`missionLevel${type}`).value;
             const runs = document.getElementById(`runs${type}`).value;
             const description = document.getElementById(`description${type}`).value;
+            const username = sessionStorage.getItem('username');
+            const platform = sessionStorage.getItem('platform');
+
             if (!missionType || !missionLevel) {
                 alert('Please select both a mission type and objective.');
                 return;
@@ -341,8 +348,8 @@
                 runs: runs,
                 description: description,
                 timestamp: new Date(),
-                username: "SampleUser", // Replace with actual username
-                platform: "SamplePlatform" // Replace with actual platform
+                username: username || "Unknown User",
+                platform: platform || "Unknown Platform"
             };
 
             groups.unshift(group);
