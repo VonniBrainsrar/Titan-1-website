@@ -52,14 +52,19 @@
             margin: 10px;
             border-radius: 50%;
             cursor: pointer;
+            border: 2px solid transparent; /* Default border */
+            transition: border-color 0.3s ease; /* Smooth transition for hover effect */
         }
         .profile-pic img {
             width: 100%;
             height: 100%;
             border-radius: 50%;
         }
+        .profile-pic.selected {
+            border-color: #009688; /* Highlight selected profile pic */
+        }
         .profile-pic:hover {
-            border: 2px solid #009688;
+            border-color: #009688;
         }
         .box-container {
             display: flex;
@@ -226,244 +231,74 @@
                 <h2>LFG</h2>
                 <form id="lfgForm">
                     <label for="missionTypeLFG">Select a Mission Type:</label>
-                    <select id="missionTypeLFG" onchange="updateLevels('LFG')">
-                        <option value="Void Farming">Void Farming</option>
-                        <option value="Calling of the Descendants">Calling of the Descendants</option>
-                        <option value="Normal Void Battles">Normal Void Battles</option>
-                        <option value="Hard Void Battles">Hard Void Battles</option>
-                        <option value="Encrypted Vaults">Encrypted Vaults</option>
-                        <option value="Zone Farming">Zone Farming</option>
+                    <select id="missionTypeLFG" name="missionTypeLFG">
+                        <option value="mission1">Mission 1</option>
+                        <option value="mission2">Mission 2</option>
+                        <!-- Add more missions as needed -->
                     </select>
-
-                    <label for="missionLevelLFG">What is your Objective:</label>
-                    <select id="missionLevelLFG">
-                        <!-- Levels will be populated here -->
+                    <label for="desiredRoleLFG">Desired Role:</label>
+                    <select id="desiredRoleLFG" name="desiredRoleLFG">
+                        <option value="tank">Tank</option>
+                        <option value="dps">DPS</option>
+                        <option value="healer">Healer</option>
+                        <!-- Add more roles as needed -->
                     </select>
-
-                    <label for="runsLFG">Number of Runs:</label>
-                    <input type="number" id="runsLFG" min="1" value="1">
-
-                    <label for="descriptionLFG">Description:</label>
-                    <textarea id="descriptionLFG" rows="4" placeholder="Enter description here..."></textarea>
-
-                    <button type="button" onclick="createGroup('LFG')">Create LFG Post</button>
+                    <button type="button" onclick="postLFG()">Post LFG</button>
                 </form>
             </div>
             <div class="box">
-                <h2>LFM</h2>
-                <form id="lfmForm">
-                    <label for="missionTypeLFM">Select a Mission Type:</label>
-                    <select id="missionTypeLFM" onchange="updateLevels('LFM')">
-                        <option value="Void Farming">Void Farming</option>
-                        <option value="Calling of the Descendants">Calling of the Descendants</option>
-                        <option value="Normal Void Battles">Normal Void Battles</option>
-                        <option value="Hard Void Battles">Hard Void Battles</option>
-                        <option value="Encrypted Vaults">Encrypted Vaults</option>
-                        <option value="Zone Farming">Zone Farming</option>
-                    </select>
-
-                    <label for="missionLevelLFM">What is your Objective:</label>
-                    <select id="missionLevelLFM">
-                        <!-- Levels will be populated here -->
-                    </select>
-
-                    <label for="runsLFM">Number of Runs:</label>
-                    <input type="number" id="runsLFM" min="1" value="1">
-
-                    <label for="descriptionLFM">Description:</label>
-                    <textarea id="descriptionLFM" rows="4" placeholder="Enter description here..."></textarea>
-
-                    <button type="button" onclick="createGroup('LFM')">Create LFM Post</button>
-                </form>
+                <h2>Looking for Group</h2>
+                <div id="groupList">
+                    <!-- Dynamic group list items will be inserted here -->
+                </div>
             </div>
-        </div>
-
-        <!-- Recently Created Groups -->
-        <div id="groupList">
-            <h2>Recently Created Groups</h2>
-            <!-- Groups will be listed here -->
-        </div>
-
-        <!-- Notifications -->
-        <div id="notificationList">
-            <h2>Notifications</h2>
-            <!-- Notifications will be listed here -->
         </div>
     </div>
 
     <script>
-        const levels = {
-            "Void Farming": ['Fire', 'Electric', 'Ice', 'Toxic', 'Non-Attribute'],
-            "Calling of the Descendants": [
-                'Bio-Lab', 'Caligo Ossuary', 'Heart of the Fortress', 'Magister Lab', 
-                'Mystery\'s End', 'Old Mystery', 'Quarantine Zone', 'Seed Vault', 
-                'Sepulcher', 'Slumber Valley', 'The Asylum', 'The Chapel', 
-                'The Forgottense', 'The Haven', 'The Shelter', 'Unknown Laboratory'
-            ],
-            "Normal Void Battles": ['Grave Walker', 'Stunning Beauty', 'Executioner', 
-                                     'Dead Bride', 'Devourer', 'Pyromaniac', 
-                                     'Swamp Walker', 'Hanged Man'],
-            "Hard Void Battles": ['Executioner', 'Dead Bride', 'Devourer', 'Pyromaniac', 
-                                   'Swamp Walker', 'Obstructor', 'Frost Walker', 
-                                   'Molten Fortress'],
-            "Encrypted Vaults": ['Vault 1', 'Vault 2', 'Vault 3'], // Placeholder levels
-            "Zone Farming": ['Agna Desert', 'Echo Swamp', 'Fortress', 'Haigos', 
-                             'Kingston', 'Sterile Land', 'Vespers', 'White Night Gulch']
-        };
-
-        const groups = [];
-        const notifications = [];
-
-        function showProfileForm() {
+        function createAccount() {
+            // Handle account creation logic
             document.getElementById('splashPage').classList.add('hidden');
             document.getElementById('profileFormContainer').classList.remove('hidden');
         }
 
+        function selectPic(picId) {
+            // Update selected profile picture
+            document.querySelectorAll('.profile-pic').forEach(pic => {
+                pic.classList.remove('selected');
+            });
+            document.querySelector(`.profile-pic[onclick*="${picId}"]`).classList.add('selected');
+            document.getElementById('selectedPic').value = picId;
+        }
+
         function createProfile() {
-            const username = document.getElementById('newUsername').value;
-            const profilePic = document.getElementById('selectedPic').value;
-            const character = document.getElementById('character').value;
-            const characterLevel = document.getElementById('characterLevel').value;
-            const platform = document.getElementById('platform').value;
-            const ingameUsername = document.getElementById('ingameUsername').value;
-
-            if (!username || !profilePic || !character || !characterLevel || !platform || !ingameUsername) {
-                alert('Please fill out all profile fields.');
-                return;
-            }
-
-            // Save profile data to session storage (optional)
-            sessionStorage.setItem('username', username);
-            sessionStorage.setItem('platform', platform);
-
+            // Handle profile creation logic
             document.getElementById('profileFormContainer').classList.add('hidden');
             document.getElementById('mainContent').classList.remove('hidden');
         }
 
-        function createAccount() {
-            const username = document.getElementById('newUsername').value;
-            const email = document.getElementById('newEmail').value;
-            const password = document.getElementById('newPassword').value;
-
-            if (!username || !email || !password) {
-                alert('Please fill out all account fields.');
-                return;
-            }
-
-            document.getElementById('createAccountForm').classList.add('hidden');
-            showProfileForm();
-        }
-
-        function createGroup(type) {
-            const missionType = document.getElementById(`missionType${type}`).value;
-            const missionLevel = document.getElementById(`missionLevel${type}`).value;
-            const runs = document.getElementById(`runs${type}`).value;
-            const description = document.getElementById(`description${type}`).value;
-            const username = sessionStorage.getItem('username');
-            const platform = sessionStorage.getItem('platform');
-
-            if (!missionType || !missionLevel) {
-                alert('Please select both a mission type and objective.');
-                return;
-            }
-
-            const group = {
-                type: type,
-                missionType: missionType,
-                missionLevel: missionLevel,
-                runs: runs,
-                description: description,
-                timestamp: new Date(),
-                username: username || "Unknown User",
-                platform: platform || "Unknown Platform"
-            };
-
-            groups.unshift(group);
-            displayGroups();
-        }
-
-        function updateLevels(type) {
-            const missionType = document.getElementById(`missionType${type}`).value;
-            const missionLevel = document.getElementById(`missionLevel${type}`);
-            missionLevel.innerHTML = '';
-
-            levels[missionType].forEach(level => {
-                const option = document.createElement('option');
-                option.value = level;
-                option.textContent = level;
-                missionLevel.appendChild(option);
-            });
-        }
-
-        function displayGroups() {
+        function postLFG() {
+            // Handle LFG posting logic
+            const missionType = document.getElementById('missionTypeLFG').value;
+            const desiredRole = document.getElementById('desiredRoleLFG').value;
             const groupList = document.getElementById('groupList');
-            groupList.innerHTML = '<h2>Recently Created Groups</h2>';
-
-            groups.forEach((group, index) => {
-                const groupItem = document.createElement('div');
-                groupItem.classList.add('group-item');
-                groupItem.innerHTML = `
-                    ${group.timestamp.toLocaleString()} - ${group.type} - ${group.missionType} - ${group.missionLevel} - Runs: ${group.runs} - ${group.description} - Username: ${group.username} - Platform: ${group.platform}
-                    <button onclick="inviteUser(${index})">Invite</button>
-                    <button onclick="requestJoin(${index})">Request Join</button>
-                `;
-                groupList.appendChild(groupItem);
-            });
+            
+            // Create new group item
+            const groupItem = document.createElement('div');
+            groupItem.className = 'group-item';
+            groupItem.innerHTML = `
+                <strong>Mission Type:</strong> ${missionType}<br>
+                <strong>Desired Role:</strong> ${desiredRole}
+                <button onclick="joinGroup(this)">Join</button>
+            `;
+            groupList.appendChild(groupItem);
         }
 
-        function inviteUser(index) {
-            const group = groups[index];
-            const message = `You have been invited to join the ${group.type} group for ${group.missionType} - ${group.missionLevel}. Description: ${group.description}`;
-            notifications.push({type: 'Invite', message: message, recipient: group.username});
-            alert(`Invitation sent to ${group.username}`);
+        function joinGroup(button) {
+            // Handle joining a group
+            const groupItem = button.parentElement;
+            groupItem.parentElement.removeChild(groupItem);
         }
-
-        function requestJoin(index) {
-            const group = groups[index];
-            const message = `Request to join the ${group.type} group for ${group.missionType} - ${group.missionLevel}. Description: ${group.description}`;
-            notifications.push({type: 'Request', message: message, recipient: group.username, groupIndex: index});
-            displayNotifications();
-        }
-
-        function displayNotifications() {
-            const notificationList = document.getElementById('notificationList');
-            notificationList.innerHTML = '<h2>Notifications</h2>';
-
-            notifications.forEach((notification, index) => {
-                const notificationItem = document.createElement('div');
-                notificationItem.classList.add('notification');
-                notificationItem.innerHTML = `
-                    ${notification.message}
-                    ${notification.type === 'Request' ? `
-                    <button onclick="acceptRequest(${index})">Accept</button>
-                    <button onclick="denyRequest(${index})">Deny</button>
-                    ` : ''}
-                `;
-                notificationList.appendChild(notificationItem);
-            });
-        }
-
-        function acceptRequest(index) {
-            const notification = notifications[index];
-            const group = groups[notification.groupIndex];
-
-            alert(`Request accepted. ${notification.recipient} is now part of the ${group.type} group for ${group.missionType} - ${group.missionLevel}.`);
-            notifications.splice(index, 1);
-            displayNotifications();
-        }
-
-        function denyRequest(index) {
-            const notification = notifications[index];
-            alert(`Request denied. ${notification.recipient} was not added to the group.`);
-            notifications.splice(index, 1);
-            displayNotifications();
-        }
-
-        // Initialize UI
-        document.getElementById('createAccountForm').addEventListener('submit', (event) => {
-            event.preventDefault();
-            createAccount();
-        });
     </script>
 </body>
 </html>
