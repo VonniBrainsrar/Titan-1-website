@@ -57,7 +57,8 @@ document.addEventListener("DOMContentLoaded", () => {
         height: "100px",
         margin: "10px",
         borderRadius: "50%",
-        cursor: "pointer"
+        cursor: "pointer",
+        pointerEvents: "auto"  // Ensure the profile picture is clickable
     };
 
     const profilePicHoverStyle = {
@@ -120,6 +121,12 @@ document.addEventListener("DOMContentLoaded", () => {
         transform: "scale(1)"
     };
 
+    // Handle profile picture click
+    const handleProfilePicClick = (event) => {
+        // Replace this with actual functionality, e.g., opening a file chooser
+        alert('Profile picture clicked!');
+    };
+
     // Apply styles
     const applyStyles = () => {
         // Apply styles to body
@@ -161,6 +168,7 @@ document.addEventListener("DOMContentLoaded", () => {
             Object.assign(pic.style, profilePicStyle);
             pic.addEventListener('mouseover', () => Object.assign(pic.style, profilePicHoverStyle));
             pic.addEventListener('mouseout', () => Object.assign(pic.style, profilePicStyle));
+            pic.addEventListener('click', handleProfilePicClick);  // Add click event listener
         });
 
         // Apply styles to box containers
