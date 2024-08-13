@@ -3,16 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Main Page - Titan LFG</title>
+    <title>Titan LFG</title>
     <link rel="stylesheet" href="styles.css">
     <style>
         body {
             font-family: Arial, sans-serif;
             background-color: #f0f0f0;
             color: #333;
-        }
-        h1 {
-            color: #009688;
         }
         .container {
             max-width: 1200px;
@@ -22,6 +19,9 @@
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
+        h1 {
+            color: #009688;
+        }
         .form-group {
             margin-bottom: 15px;
         }
@@ -29,7 +29,7 @@
             display: block;
             margin-bottom: 5px;
         }
-        input, select, button {
+        input, select, textarea, button {
             width: 100%;
             padding: 10px;
             margin-top: 5px;
@@ -44,6 +44,22 @@
         }
         button:hover {
             background-color: #00796b;
+        }
+        .profile-pic {
+            display: inline-block;
+            width: 100px;
+            height: 100px;
+            margin: 10px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        .profile-pic img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+        }
+        .profile-pic:hover {
+            border: 2px solid #009688;
         }
         .box-container {
             display: flex;
@@ -61,9 +77,6 @@
         .box h2 {
             margin-top: 0;
         }
-        .box button {
-            margin-top: 10px;
-        }
         #groupList {
             margin-top: 20px;
         }
@@ -73,10 +86,71 @@
             margin-bottom: 5px;
             background: #f9f9f9;
         }
+        .hidden {
+            display: none;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
+    <!-- Splash Page -->
+    <div id="splashPage" class="container">
+        <h1>Login & Profile Creation</h1>
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <button type="button" onclick="showProfileForm()">Login</button>
+        </form>
+
+        <hr>
+
+        <form id="profileForm" class="hidden">
+            <h2>Create Your Profile</h2>
+            <div class="form-group">
+                <label for="profilePic">Choose a Profile Picture</label>
+                <div id="profilePicContainer">
+                    <div class="profile-pic" onclick="selectPic('pic1')"><img src="pic1.jpg" alt="Profile Pic 1"></div>
+                    <div class="profile-pic" onclick="selectPic('pic2')"><img src="pic2.jpg" alt="Profile Pic 2"></div>
+                    <div class="profile-pic" onclick="selectPic('pic3')"><img src="pic3.jpg" alt="Profile Pic 3"></div>
+                    <!-- Add more profile pics as needed -->
+                </div>
+                <input type="hidden" id="selectedPic" name="profilePic">
+            </div>
+            <div class="form-group">
+                <label for="character">Choose Your Character</label>
+                <select id="character" name="character">
+                    <option value="1">Character 1</option>
+                    <option value="2">Character 2</option>
+                    <!-- Add more characters as needed -->
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="characterLevel">Character Level (1-40)</label>
+                <input type="number" id="characterLevel" name="characterLevel" min="1" max="40" required>
+            </div>
+            <div class="form-group">
+                <label for="platform">Gaming Platform</label>
+                <select id="platform" name="platform">
+                    <option value="steam">Steam</option>
+                    <option value="xbox">Xbox</option>
+                    <option value="pc">PC</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="ingameUsername">In-Game Username</label>
+                <input type="text" id="ingameUsername" name="ingameUsername" required>
+            </div>
+            <button type="button" onclick="createProfile()">Create Profile</button>
+        </form>
+    </div>
+
+    <!-- Main Content -->
+    <div id="mainContent" class="container hidden">
         <h1>Welcome to Titan LFG</h1>
         <form id="lfgForm">
             <div class="box-container">
@@ -100,6 +174,9 @@
                     <label for="runsLFG">Number of Runs:</label>
                     <input type="number" id="runsLFG" min="1" value="1">
 
+                    <label for="descriptionLFG">Description:</label>
+                    <textarea id="descriptionLFG" rows="4" placeholder="Enter description here..."></textarea>
+
                     <button type="button" onclick="createGroup('LFG')">Create LFG Post</button>
                 </div>
                 <div class="box">
@@ -121,6 +198,9 @@
 
                     <label for="runsLFM">Number of Runs:</label>
                     <input type="number" id="runsLFM" min="1" value="1">
+
+                    <label for="descriptionLFM">Description:</label>
+                    <textarea id="descriptionLFM" rows="4" placeholder="Enter description here..."></textarea>
 
                     <button type="button" onclick="createGroup('LFM')">Create LFM Post</button>
                 </div>
@@ -157,6 +237,58 @@
         // Array to store created groups
         const groups = [];
 
+        // Function to show the profile form and hide the login form
+        function showProfileForm() {
+            document.getElementById('splashPage').classList.add('hidden');
+            document.getElementById('profileForm').classList.remove('hidden');
+        }
+
+        // Function to handle profile creation
+        function createProfile() {
+            const username = document.getElementById('username').value;
+            const profilePic = document.getElementById('selectedPic').value;
+            const character = document.getElementById('character').value;
+            const characterLevel = document.getElementById('characterLevel').value;
+            const platform = document.getElementById('platform').value;
+            const ingameUsername = document.getElementById('ingameUsername').value;
+
+            if (!username || !profilePic || !character || !characterLevel || !platform || !ingameUsername) {
+                alert('Please fill out all profile fields.');
+                return;
+            }
+
+            document.getElementById('mainContent').classList.remove('hidden');
+        }
+
+        // Function to handle the 'Create Group' button click
+        function createGroup(type) {
+            const missionType = document.getElementById(`missionType${type}`).value;
+            const missionLevel = document.getElementById(`missionLevel${type}`).value;
+            const runs = document.getElementById(`runs${type}`).value;
+            const description = document.getElementById(`description${type}`).value;
+            if (!missionType || !missionLevel) {
+                alert('Please select both a mission type and objective.');
+                return;
+            }
+
+            const group = {
+                type: type,
+                missionType: missionType,
+                missionLevel: missionLevel,
+                runs: runs,
+                description: description,
+                timestamp: new Date(),
+                username: "SampleUser", // Replace with actual username
+                platform: "SamplePlatform" // Replace with actual platform
+            };
+
+            // Add the new group to the beginning of the array
+            groups.unshift(group);
+
+            // Update the group list display
+            displayGroups();
+        }
+
         // Function to update mission levels based on selected mission type
         function updateLevels(type) {
             const missionType = document.getElementById(`missionType${type}`).value;
@@ -171,33 +303,6 @@
             });
         }
 
-        // Function to handle the 'Create Group' button click
-        function createGroup(type) {
-            const missionType = document.getElementById(`missionType${type}`).value;
-            const missionLevel = document.getElementById(`missionLevel${type}`).value;
-            const runs = document.getElementById(`runs${type}`).value;
-            if (!missionType || !missionLevel) {
-                alert('Please select both a mission type and objective.');
-                return;
-            }
-
-            const group = {
-                type: type,
-                missionType: missionType,
-                missionLevel: missionLevel,
-                runs: runs,
-                timestamp: new Date(),
-                username: "SampleUser", // Replace with actual username
-                platform: "SamplePlatform" // Replace with actual platform
-            };
-
-            // Add the new group to the beginning of the array
-            groups.unshift(group);
-
-            // Update the group list display
-            displayGroups();
-        }
-
         // Function to display the list of groups
         function displayGroups() {
             const groupList = document.getElementById('groupList');
@@ -206,7 +311,7 @@
             groups.forEach(group => {
                 const groupItem = document.createElement('div');
                 groupItem.classList.add('group-item');
-                groupItem.textContent = `${group.timestamp.toLocaleString()} - ${group.type} - ${group.missionType} - ${group.missionLevel} - Runs: ${group.runs} - Username: ${group.username} - Platform: ${group.platform}`;
+                groupItem.textContent = `${group.timestamp.toLocaleString()} - ${group.type} - ${group.missionType} - ${group.missionLevel} - Runs: ${group.runs} - ${group.description} - Username: ${group.username} - Platform: ${group.platform}`;
                 groupList.appendChild(groupItem);
             });
         }
@@ -214,6 +319,14 @@
         // Initialize the mission levels for the default selected mission type
         updateLevels('LFG');
         updateLevels('LFM');
+
+        // Function to handle profile picture selection
+        function selectPic(picId) {
+            document.getElementById('selectedPic').value = picId;
+            const pics = document.querySelectorAll('.profile-pic');
+            pics.forEach(pic => pic.style.border = 'none');
+            document.querySelector(`.profile-pic img[src*="${picId}"]`).parentElement.style.border = '2px solid #009688';
+        }
     </script>
 </body>
 </html>
