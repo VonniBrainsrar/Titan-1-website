@@ -85,6 +85,14 @@
             padding: 10px;
             margin-bottom: 5px;
             background: #f9f9f9;
+            position: relative;
+        }
+        .group-item button {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            padding: 5px 10px;
+            font-size: 14px;
         }
         .hidden {
             display: none;
@@ -111,6 +119,16 @@
         .neon-button:active {
             box-shadow: 0 0 15px rgba(0, 150, 136, 0.4);
             transform: scale(1);
+        }
+        .notification {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-bottom: 10px;
+            background: #f9f9f9;
+            position: relative;
+        }
+        .notification button {
+            margin-left: 10px;
         }
     </style>
 </head>
@@ -189,6 +207,7 @@
                     <option value="steam">Steam</option>
                     <option value="xbox">Xbox</option>
                     <option value="ps4">PS4</option>
+                    <option value="ps5">PS5</option>
                 </select>
             </div>
             <div class="form-group">
@@ -264,6 +283,12 @@
             <h2>Recently Created Groups</h2>
             <!-- Groups will be listed here -->
         </div>
+
+        <!-- Notifications -->
+        <div id="notificationList">
+            <h2>Notifications</h2>
+            <!-- Notifications will be listed here -->
+        </div>
     </div>
 
     <script>
@@ -287,6 +312,7 @@
         };
 
         const groups = [];
+        const notifications = [];
 
         function showProfileForm() {
             document.getElementById('splashPage').classList.add('hidden');
@@ -373,23 +399,71 @@
             const groupList = document.getElementById('groupList');
             groupList.innerHTML = '<h2>Recently Created Groups</h2>';
 
-            groups.forEach(group => {
+            groups.forEach((group, index) => {
                 const groupItem = document.createElement('div');
                 groupItem.classList.add('group-item');
-                groupItem.textContent = `${group.timestamp.toLocaleString()} - ${group.type} - ${group.missionType} - ${group.missionLevel} - Runs: ${group.runs} - ${group.description} - Username: ${group.username} - Platform: ${group.platform}`;
+                groupItem.innerHTML = `
+                    ${group.timestamp.toLocaleString()} - ${group.type} - ${group.missionType} - ${group.missionLevel} - Runs: ${group.runs} - ${group.description} - Username: ${group.username} - Platform: ${group.platform}
+                    <button onclick="inviteUser(${index})">Invite</button>
+                    <button onclick="requestJoin(${index})">Request Join</button>
+                `;
                 groupList.appendChild(groupItem);
             });
         }
 
-        function selectPic(picId) {
-            document.getElementById('selectedPic').value = picId;
-            const pics = document.querySelectorAll('.profile-pic');
-            pics.forEach(pic => pic.style.border = 'none');
-            document.querySelector(`.profile-pic img[src*="${picId}"]`).parentElement.style.border = '2px solid #009688';
+        function inviteUser(index) {
+            const group = groups[index];
+            const message = `You have been invited to join the ${group.type} group for ${group.missionType} - ${group.missionLevel}. Description: ${group.description}`;
+            notifications.push({type: 'Invite', message: message, recipient: group.username});
+            alert(`Invitation sent to ${group.username}`);
         }
 
-        updateLevels('LFG');
-        updateLevels('LFM');
+        function requestJoin(index) {
+            const group = groups[index];
+            const message = `Request to join the ${group.type} group for ${group.missionType} - ${group.missionLevel}. Description: ${group.description}`;
+            notifications.push({type: 'Request', message: message, recipient: group.username, groupIndex: index});
+            displayNotifications();
+        }
+
+        function displayNotifications() {
+            const notificationList = document.getElementById('notificationList');
+            notificationList.innerHTML = '<h2>Notifications</h2>';
+
+            notifications.forEach((notification, index) => {
+                const notificationItem = document.createElement('div');
+                notificationItem.classList.add('notification');
+                notificationItem.innerHTML = `
+                    ${notification.message}
+                    ${notification.type === 'Request' ? `
+                    <button onclick="acceptRequest(${index})">Accept</button>
+                    <button onclick="denyRequest(${index})">Deny</button>
+                    ` : ''}
+                `;
+                notificationList.appendChild(notificationItem);
+            });
+        }
+
+        function acceptRequest(index) {
+            const notification = notifications[index];
+            const group = groups[notification.groupIndex];
+
+            alert(`Request accepted. ${notification.recipient} is now part of the ${group.type} group for ${group.missionType} - ${group.missionLevel}.`);
+            notifications.splice(index, 1);
+            displayNotifications();
+        }
+
+        function denyRequest(index) {
+            const notification = notifications[index];
+            alert(`Request denied. ${notification.recipient} was not added to the group.`);
+            notifications.splice(index, 1);
+            displayNotifications();
+        }
+
+        // Initialize UI
+        document.getElementById('createAccountForm').addEventListener('submit', (event) => {
+            event.preventDefault();
+            createAccount();
+        });
     </script>
 </body>
 </html>
