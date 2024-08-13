@@ -85,14 +85,6 @@
             padding: 10px;
             margin-bottom: 5px;
             background: #f9f9f9;
-            position: relative;
-        }
-        .countdown-timer {
-            font-size: 0.9em;
-            color: #999;
-            position: absolute;
-            top: 10px;
-            right: 10px;
         }
         .hidden {
             display: none;
@@ -119,6 +111,10 @@
         .neon-button:active {
             box-shadow: 0 0 15px rgba(0, 150, 136, 0.4);
             transform: scale(1);
+        }
+        .countdown-timer {
+            font-size: 0.9em;
+            color: #ff5722;
         }
     </style>
 </head>
@@ -230,14 +226,15 @@
                     </select>
 
                     <label for="runsLFG">Number of Runs:</label>
-                    <input type="number" id="runsLFG" min="1" value="1">
+                    <input type="number" id="runsLFG" min="1">
 
                     <label for="descriptionLFG">Description:</label>
-                    <textarea id="descriptionLFG" rows="4" placeholder="Enter description here..."></textarea>
+                    <textarea id="descriptionLFG"></textarea>
 
-                    <button type="button" onclick="createGroup('LFG')">Create LFG Post</button>
+                    <button type="button" onclick="createGroup('LFG')">Create Group</button>
                 </form>
             </div>
+
             <div class="box">
                 <h2>LFM</h2>
                 <form id="lfmForm">
@@ -257,20 +254,18 @@
                     </select>
 
                     <label for="runsLFM">Number of Runs:</label>
-                    <input type="number" id="runsLFM" min="1" value="1">
+                    <input type="number" id="runsLFM" min="1">
 
                     <label for="descriptionLFM">Description:</label>
-                    <textarea id="descriptionLFM" rows="4" placeholder="Enter description here..."></textarea>
+                    <textarea id="descriptionLFM"></textarea>
 
-                    <button type="button" onclick="createGroup('LFM')">Create LFM Post</button>
+                    <button type="button" onclick="createGroup('LFM')">Create Group</button>
                 </form>
             </div>
         </div>
 
-        <!-- Recently Created Groups -->
         <div id="groupList">
             <h2>Recently Created Groups</h2>
-            <!-- Groups will be listed here -->
         </div>
     </div>
 
@@ -284,8 +279,8 @@
                 'The Forgottense', 'The Haven', 'The Shelter', 'Unknown Laboratory'
             ],
             "Normal Void Battles": ['Grave Walker', 'Stunning Beauty', 'Executioner', 
-                                     'Dead Bride', 'Devourer', 'Pyromaniac', 
-                                     'Swamp Walker', 'Hanged Man'],
+                                    'Dead Bride', 'Devourer', 'Pyromaniac', 
+                                    'Swamp Walker', 'Hanged Man'],
             "Hard Void Battles": ['Executioner', 'Dead Bride', 'Devourer', 'Pyromaniac', 
                                    'Swamp Walker', 'Obstructor', 'Frost Walker', 
                                    'Molten Fortress'],
@@ -314,7 +309,6 @@
                 return;
             }
 
-            // Save profile data to session storage (optional)
             sessionStorage.setItem('username', username);
             sessionStorage.setItem('platform', platform);
 
@@ -413,7 +407,7 @@
         updateLevels('LFG');
         updateLevels('LFM');
 
-        // Update the group list every 20 seconds
+        // Update the group list and countdown timers every 20 seconds
         setInterval(() => {
             displayGroups();
         }, 20000);
