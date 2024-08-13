@@ -89,6 +89,29 @@
         .hidden {
             display: none;
         }
+        .neon-button {
+            display: inline-block;
+            padding: 15px 30px;
+            margin: 20px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            color: #fff;
+            background: #009688;
+            border-radius: 50px;
+            box-shadow: 0 0 10px rgba(0, 150, 136, 0.5);
+            transition: all 0.3s ease-in-out;
+            cursor: pointer;
+        }
+        .neon-button:hover {
+            background: #00796b;
+            box-shadow: 0 0 20px rgba(0, 150, 136, 0.8);
+            transform: scale(1.1);
+        }
+        .neon-button:active {
+            box-shadow: 0 0 15px rgba(0, 150, 136, 0.4);
+            transform: scale(1);
+        }
     </style>
 </head>
 <body>
@@ -113,22 +136,6 @@
             </div>
             <button type="button" onclick="createAccount()">Create Account</button>
         </form>
-
-        <hr>
-
-        <!-- Login Form -->
-        <form id="loginForm" class="hidden">
-            <h2>Login</h2>
-            <div class="form-group">
-                <label for="loginUsername">Username</label>
-                <input type="text" id="loginUsername" name="loginUsername" required>
-            </div>
-            <div class="form-group">
-                <label for="loginPassword">Password</label>
-                <input type="password" id="loginPassword" name="loginPassword" required>
-            </div>
-            <button type="button" onclick="showProfileForm()">Login</button>
-        </form>
     </div>
 
     <!-- Profile Creation -->
@@ -148,8 +155,27 @@
             <div class="form-group">
                 <label for="character">Choose Your Character</label>
                 <select id="character" name="character">
-                    <option value="1">Character 1</option>
-                    <option value="2">Character 2</option>
+                    <option value="1">Ajax</option>
+                    <option value="2">Ultimate Ajax</option>
+                    <option value="1">Ultimate Blair</option>
+                    <option value="2">Bunny</option>
+                    <option value="1">Ultimate Bunny</option>
+                    <option value="2">Enzo</option>
+                    <option value="1">Esiemo</option>
+                    <option value="2">Freyna</option>
+                    <option value="1">Gley</option>
+                    <option value="2">Ultimate Gley</option>
+                    <option value="1">Jayber</option>
+                    <option value="2">Kyle</option>
+                    <option value="1">Lepic</option>
+                    <option value="2">Ultimate Lepic</option>
+                    <option value="1">Luna</option>
+                    <option value="2">Sharen</option>
+                    <option value="1">Valby</option>
+                    <option value="2">Ultimate Valby</option>
+                    <option value="1">Viessa</option>
+                    <option value="2">Ultimate Viessa</option>
+                    <option value="1">Yujin</option>
                     <!-- Add more characters as needed -->
                 </select>
             </div>
@@ -233,7 +259,7 @@
             </div>
         </div>
 
-        <!-- Recently created groups list -->
+        <!-- Recently Created Groups -->
         <div id="groupList">
             <h2>Recently Created Groups</h2>
             <!-- Groups will be listed here -->
@@ -268,7 +294,7 @@
         }
 
         function createProfile() {
-            const username = document.getElementById('username').value;
+            const username = document.getElementById('newUsername').value;
             const profilePic = document.getElementById('selectedPic').value;
             const character = document.getElementById('character').value;
             const characterLevel = document.getElementById('characterLevel').value;
@@ -295,7 +321,7 @@
             }
 
             document.getElementById('createAccountForm').classList.add('hidden');
-            document.getElementById('loginForm').classList.remove('hidden');
+            showProfileForm();
         }
 
         function createGroup(type) {
