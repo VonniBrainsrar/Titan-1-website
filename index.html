@@ -94,22 +94,46 @@
 <body>
     <!-- Splash Page -->
     <div id="splashPage" class="container">
-        <h1>Login & Profile Creation</h1>
-        <form id="loginForm">
+        <h1>Welcome to Titan LFG</h1>
+        
+        <!-- Account Creation Form -->
+        <form id="createAccountForm">
+            <h2>Create an Account</h2>
             <div class="form-group">
-                <label for="username">Username</label>
-                <input type="text" id="username" name="username" required>
+                <label for="newUsername">Username</label>
+                <input type="text" id="newUsername" name="newUsername" required>
             </div>
             <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" name="password" required>
+                <label for="newEmail">Email</label>
+                <input type="email" id="newEmail" name="newEmail" required>
             </div>
-            <button type="button" onclick="showProfileForm()">Login</button>
+            <div class="form-group">
+                <label for="newPassword">Password</label>
+                <input type="password" id="newPassword" name="newPassword" required>
+            </div>
+            <button type="button" onclick="createAccount()">Create Account</button>
         </form>
 
         <hr>
 
-        <form id="profileForm" class="hidden">
+        <!-- Login Form -->
+        <form id="loginForm" class="hidden">
+            <h2>Login</h2>
+            <div class="form-group">
+                <label for="loginUsername">Username</label>
+                <input type="text" id="loginUsername" name="loginUsername" required>
+            </div>
+            <div class="form-group">
+                <label for="loginPassword">Password</label>
+                <input type="password" id="loginPassword" name="loginPassword" required>
+            </div>
+            <button type="button" onclick="showProfileForm()">Login</button>
+        </form>
+    </div>
+
+    <!-- Profile Creation -->
+    <div id="profileFormContainer" class="container hidden">
+        <form id="profileForm">
             <h2>Create Your Profile</h2>
             <div class="form-group">
                 <label for="profilePic">Choose a Profile Picture</label>
@@ -124,27 +148,8 @@
             <div class="form-group">
                 <label for="character">Choose Your Character</label>
                 <select id="character" name="character">
-                    <option value="1">Ajax</option>
-                    <option value="2">Blair</option>
-                    <option value="2">Bunny</option>
-                    <option value="1">Enzo</option>
-                    <option value="2">Esiemo</option>
-                    <option value="2">Freyna</option>
-                    <option value="1">Gley</option>
-                    <option value="2">Jayber</option>
-                    <option value="2">Kyle</option>
-                    <option value="1">Lepic</option>
-                    <option value="2">Luna</option>
-                    <option value="2">Sharen</option>
-                    <option value="1">Valby</option>
-                    <option value="2">Viessa</option>
-                    <option value="2">Yujin</option>
-                    <option value="1">Ultimate Ajax</option>
-                    <option value="2">Ultimate Bunny</option>
-                    <option value="2">Ultimate Gley</option>
-                    <option value="1">Ultimate Lepic</option>
-                    <option value="2">Ultimate Valby</option>
-                    <option value="2">Ultimate Viessa</option>
+                    <option value="1">Character 1</option>
+                    <option value="2">Character 2</option>
                     <!-- Add more characters as needed -->
                 </select>
             </div>
@@ -171,10 +176,10 @@
     <!-- Main Content -->
     <div id="mainContent" class="container hidden">
         <h1>Welcome to Titan LFG</h1>
-        <form id="lfgForm">
-            <div class="box-container">
-                <div class="box">
-                    <h2>LFG</h2>
+        <div class="box-container">
+            <div class="box">
+                <h2>LFG</h2>
+                <form id="lfgForm">
                     <label for="missionTypeLFG">Select a Mission Type:</label>
                     <select id="missionTypeLFG" onchange="updateLevels('LFG')">
                         <option value="Void Farming">Void Farming</option>
@@ -197,9 +202,11 @@
                     <textarea id="descriptionLFG" rows="4" placeholder="Enter description here..."></textarea>
 
                     <button type="button" onclick="createGroup('LFG')">Create LFG Post</button>
-                </div>
-                <div class="box">
-                    <h2>LFM</h2>
+                </form>
+            </div>
+            <div class="box">
+                <h2>LFM</h2>
+                <form id="lfmForm">
                     <label for="missionTypeLFM">Select a Mission Type:</label>
                     <select id="missionTypeLFM" onchange="updateLevels('LFM')">
                         <option value="Void Farming">Void Farming</option>
@@ -222,18 +229,18 @@
                     <textarea id="descriptionLFM" rows="4" placeholder="Enter description here..."></textarea>
 
                     <button type="button" onclick="createGroup('LFM')">Create LFM Post</button>
-                </div>
+                </form>
             </div>
+        </div>
 
-            <div id="groupList">
-                <h2>Recently Created Groups</h2>
-                <!-- Groups will be listed here -->
-            </div>
-        </form>
+        <!-- Recently created groups list -->
+        <div id="groupList">
+            <h2>Recently Created Groups</h2>
+            <!-- Groups will be listed here -->
+        </div>
     </div>
 
     <script>
-        // Object storing the different mission types and their respective levels
         const levels = {
             "Void Farming": ['Fire', 'Electric', 'Ice', 'Toxic', 'Non-Attribute'],
             "Calling of the Descendants": [
@@ -253,16 +260,13 @@
                              'Kingston', 'Sterile Land', 'Vespers', 'White Night Gulch']
         };
 
-        // Array to store created groups
         const groups = [];
 
-        // Function to show the profile form and hide the login form
         function showProfileForm() {
             document.getElementById('splashPage').classList.add('hidden');
-            document.getElementById('profileForm').classList.remove('hidden');
+            document.getElementById('profileFormContainer').classList.remove('hidden');
         }
 
-        // Function to handle profile creation
         function createProfile() {
             const username = document.getElementById('username').value;
             const profilePic = document.getElementById('selectedPic').value;
@@ -276,10 +280,24 @@
                 return;
             }
 
+            document.getElementById('profileFormContainer').classList.add('hidden');
             document.getElementById('mainContent').classList.remove('hidden');
         }
 
-        // Function to handle the 'Create Group' button click
+        function createAccount() {
+            const username = document.getElementById('newUsername').value;
+            const email = document.getElementById('newEmail').value;
+            const password = document.getElementById('newPassword').value;
+
+            if (!username || !email || !password) {
+                alert('Please fill out all account fields.');
+                return;
+            }
+
+            document.getElementById('createAccountForm').classList.add('hidden');
+            document.getElementById('loginForm').classList.remove('hidden');
+        }
+
         function createGroup(type) {
             const missionType = document.getElementById(`missionType${type}`).value;
             const missionLevel = document.getElementById(`missionLevel${type}`).value;
@@ -301,18 +319,14 @@
                 platform: "SamplePlatform" // Replace with actual platform
             };
 
-            // Add the new group to the beginning of the array
             groups.unshift(group);
-
-            // Update the group list display
             displayGroups();
         }
 
-        // Function to update mission levels based on selected mission type
         function updateLevels(type) {
             const missionType = document.getElementById(`missionType${type}`).value;
             const missionLevel = document.getElementById(`missionLevel${type}`);
-            missionLevel.innerHTML = ''; // Clear existing options
+            missionLevel.innerHTML = '';
 
             levels[missionType].forEach(level => {
                 const option = document.createElement('option');
@@ -322,10 +336,9 @@
             });
         }
 
-        // Function to display the list of groups
         function displayGroups() {
             const groupList = document.getElementById('groupList');
-            groupList.innerHTML = '<h2>Recently Created Groups</h2>'; // Reset list
+            groupList.innerHTML = '<h2>Recently Created Groups</h2>';
 
             groups.forEach(group => {
                 const groupItem = document.createElement('div');
@@ -335,17 +348,15 @@
             });
         }
 
-        // Initialize the mission levels for the default selected mission type
-        updateLevels('LFG');
-        updateLevels('LFM');
-
-        // Function to handle profile picture selection
         function selectPic(picId) {
             document.getElementById('selectedPic').value = picId;
             const pics = document.querySelectorAll('.profile-pic');
             pics.forEach(pic => pic.style.border = 'none');
             document.querySelector(`.profile-pic img[src*="${picId}"]`).parentElement.style.border = '2px solid #009688';
         }
+
+        updateLevels('LFG');
+        updateLevels('LFM');
     </script>
 </body>
 </html>
