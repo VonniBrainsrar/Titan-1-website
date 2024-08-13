@@ -1,57 +1,198 @@
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f0f0f0;
-    color: #333;
-}
+// styles.js
 
-.container {
-    max-width: 1200px;
-    margin: 50px auto;
-    padding: 20px;
-    background: #fff;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-}
+document.addEventListener("DOMContentLoaded", () => {
+    // Base styles
+    const bodyStyle = {
+        fontFamily: "Arial, sans-serif",
+        backgroundColor: "#f0f0f0",
+        color: "#333"
+    };
 
-h1 {
-    color: #009688;
-}
+    const containerStyle = {
+        maxWidth: "1200px",
+        margin: "50px auto",
+        padding: "20px",
+        background: "#fff",
+        borderRadius: "8px",
+        boxShadow: "0 0 10px rgba(0,0,0,0.1)"
+    };
 
-button {
-    background-color: #009688;
-    color: #fff;
-    border: none;
-    cursor: pointer;
-    padding: 10px 20px;
-    border-radius: 4px;
-}
+    const h1Style = {
+        color: "#009688"
+    };
 
-button:hover {
-    background-color: #00796b;
-}
+    const formGroupStyle = {
+        marginBottom: "15px"
+    };
 
-.box-container {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 20px;
-}
+    const labelStyle = {
+        display: "block",
+        marginBottom: "5px"
+    };
 
-.box {
-    flex: 1;
-    margin: 0 10px;
-    padding: 20px;
-    background: #fff;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-}
+    const inputStyle = {
+        width: "100%",
+        padding: "10px",
+        marginTop: "5px",
+        border: "1px solid #ccc",
+        borderRadius: "4px"
+    };
 
-.box h2 {
-    margin-top: 0;
-}
+    const buttonStyle = {
+        backgroundColor: "#009688",
+        color: "#fff",
+        border: "none",
+        cursor: "pointer",
+        padding: "10px",
+        borderRadius: "4px"
+    };
 
-.group-item {
-    border: 1px solid #ddd;
-    padding: 10px;
-    margin-bottom: 5px;
-    background: #f9f9f9;
-}
+    const buttonHoverStyle = {
+        backgroundColor: "#00796b"
+    };
+
+    const profilePicStyle = {
+        display: "inline-block",
+        width: "100px",
+        height: "100px",
+        margin: "10px",
+        borderRadius: "50%",
+        cursor: "pointer"
+    };
+
+    const profilePicHoverStyle = {
+        border: "2px solid #009688"
+    };
+
+    const boxContainerStyle = {
+        display: "flex",
+        justifyContent: "space-between",
+        marginTop: "20px"
+    };
+
+    const boxStyle = {
+        flex: "1",
+        margin: "0 10px",
+        padding: "20px",
+        background: "#fff",
+        borderRadius: "8px",
+        boxShadow: "0 0 10px rgba(0,0,0,0.1)"
+    };
+
+    const boxTitleStyle = {
+        marginTop: "0"
+    };
+
+    const groupItemStyle = {
+        border: "1px solid #ddd",
+        padding: "10px",
+        marginBottom: "5px",
+        background: "#f9f9f9"
+    };
+
+    const hiddenStyle = {
+        display: "none"
+    };
+
+    const neonButtonStyle = {
+        display: "inline-block",
+        padding: "15px 30px",
+        margin: "20px",
+        textAlign: "center",
+        fontSize: "18px",
+        fontWeight: "bold",
+        color: "#fff",
+        background: "#009688",
+        borderRadius: "50px",
+        boxShadow: "0 0 10px rgba(0, 150, 136, 0.5)",
+        transition: "all 0.3s ease-in-out",
+        cursor: "pointer"
+    };
+
+    const neonButtonHoverStyle = {
+        background: "#00796b",
+        boxShadow: "0 0 20px rgba(0, 150, 136, 0.8)",
+        transform: "scale(1.1)"
+    };
+
+    const neonButtonActiveStyle = {
+        boxShadow: "0 0 15px rgba(0, 150, 136, 0.4)",
+        transform: "scale(1)"
+    };
+
+    // Apply styles
+    const applyStyles = () => {
+        // Apply styles to body
+        Object.assign(document.body.style, bodyStyle);
+
+        // Apply styles to container
+        const container = document.querySelector('.container');
+        if (container) Object.assign(container.style, containerStyle);
+
+        // Apply styles to h1
+        const h1 = document.querySelector('h1');
+        if (h1) Object.assign(h1.style, h1Style);
+
+        // Apply styles to form groups
+        const formGroups = document.querySelectorAll('.form-group');
+        formGroups.forEach(group => Object.assign(group.style, formGroupStyle));
+
+        // Apply styles to labels
+        const labels = document.querySelectorAll('label');
+        labels.forEach(label => Object.assign(label.style, labelStyle));
+
+        // Apply styles to inputs
+        const inputs = document.querySelectorAll('input');
+        inputs.forEach(input => Object.assign(input.style, inputStyle));
+
+        // Apply styles to buttons
+        const buttons = document.querySelectorAll('button');
+        buttons.forEach(button => {
+            Object.assign(button.style, buttonStyle);
+            button.addEventListener('mouseover', () => Object.assign(button.style, buttonHoverStyle));
+            button.addEventListener('mouseout', () => Object.assign(button.style, buttonStyle));
+            button.addEventListener('mousedown', () => Object.assign(button.style, neonButtonActiveStyle));
+            button.addEventListener('mouseup', () => Object.assign(button.style, neonButtonStyle));
+        });
+
+        // Apply styles to profile pics
+        const profilePics = document.querySelectorAll('.profile-pic');
+        profilePics.forEach(pic => {
+            Object.assign(pic.style, profilePicStyle);
+            pic.addEventListener('mouseover', () => Object.assign(pic.style, profilePicHoverStyle));
+            pic.addEventListener('mouseout', () => Object.assign(pic.style, profilePicStyle));
+        });
+
+        // Apply styles to box containers
+        const boxContainers = document.querySelectorAll('.box-container');
+        boxContainers.forEach(container => Object.assign(container.style, boxContainerStyle));
+
+        // Apply styles to boxes
+        const boxes = document.querySelectorAll('.box');
+        boxes.forEach(box => Object.assign(box.style, boxStyle));
+
+        // Apply styles to box titles
+        const boxTitles = document.querySelectorAll('.box h2');
+        boxTitles.forEach(title => Object.assign(title.style, boxTitleStyle));
+
+        // Apply styles to group items
+        const groupItems = document.querySelectorAll('.group-item');
+        groupItems.forEach(item => Object.assign(item.style, groupItemStyle));
+
+        // Apply styles to hidden elements
+        const hiddenElements = document.querySelectorAll('.hidden');
+        hiddenElements.forEach(el => Object.assign(el.style, hiddenStyle));
+
+        // Apply styles to neon buttons
+        const neonButtons = document.querySelectorAll('.neon-button');
+        neonButtons.forEach(button => {
+            Object.assign(button.style, neonButtonStyle);
+            button.addEventListener('mouseover', () => Object.assign(button.style, neonButtonHoverStyle));
+            button.addEventListener('mouseout', () => Object.assign(button.style, neonButtonStyle));
+            button.addEventListener('mousedown', () => Object.assign(button.style, neonButtonActiveStyle));
+            button.addEventListener('mouseup', () => Object.assign(button.style, neonButtonStyle));
+        });
+    };
+
+    applyStyles();
+});
