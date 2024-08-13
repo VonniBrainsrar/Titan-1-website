@@ -52,19 +52,14 @@
             margin: 10px;
             border-radius: 50%;
             cursor: pointer;
-            border: 2px solid transparent; /* Default border */
-            transition: border-color 0.3s ease; /* Smooth transition for hover effect */
         }
         .profile-pic img {
             width: 100%;
             height: 100%;
             border-radius: 50%;
         }
-        .profile-pic.selected {
-            border-color: #009688; /* Highlight selected profile pic */
-        }
         .profile-pic:hover {
-            border-color: #009688;
+            border: 2px solid #009688;
         }
         .box-container {
             display: flex;
@@ -90,14 +85,6 @@
             padding: 10px;
             margin-bottom: 5px;
             background: #f9f9f9;
-            position: relative;
-        }
-        .group-item button {
-            position: absolute;
-            right: 10px;
-            top: 10px;
-            padding: 5px 10px;
-            font-size: 14px;
         }
         .hidden {
             display: none;
@@ -124,16 +111,6 @@
         .neon-button:active {
             box-shadow: 0 0 15px rgba(0, 150, 136, 0.4);
             transform: scale(1);
-        }
-        .notification {
-            border: 1px solid #ddd;
-            padding: 10px;
-            margin-bottom: 10px;
-            background: #f9f9f9;
-            position: relative;
-        }
-        .notification button {
-            margin-left: 10px;
         }
     </style>
 </head>
@@ -211,8 +188,7 @@
                 <select id="platform" name="platform">
                     <option value="steam">Steam</option>
                     <option value="xbox">Xbox</option>
-                    <option value="ps4">PS4</option>
-                    <option value="ps5">PS5</option>
+                    <option value="playstation">Playstation</option>
                 </select>
             </div>
             <div class="form-group">
@@ -231,74 +207,189 @@
                 <h2>LFG</h2>
                 <form id="lfgForm">
                     <label for="missionTypeLFG">Select a Mission Type:</label>
-                    <select id="missionTypeLFG" name="missionTypeLFG">
-                        <option value="mission1">Mission 1</option>
-                        <option value="mission2">Mission 2</option>
-                        <!-- Add more missions as needed -->
+                    <select id="missionTypeLFG" onchange="updateLevels('LFG')">
+                        <option value="Void Farming">Void Farming</option>
+                        <option value="Calling of the Descendants">Calling of the Descendants</option>
+                        <option value="Normal Void Battles">Normal Void Battles</option>
+                        <option value="Hard Void Battles">Hard Void Battles</option>
+                        <option value="Encrypted Vaults">Encrypted Vaults</option>
+                        <option value="Zone Farming">Zone Farming</option>
                     </select>
-                    <label for="desiredRoleLFG">Desired Role:</label>
-                    <select id="desiredRoleLFG" name="desiredRoleLFG">
-                        <option value="tank">Tank</option>
-                        <option value="dps">DPS</option>
-                        <option value="healer">Healer</option>
-                        <!-- Add more roles as needed -->
+
+                    <label for="missionLevelLFG">What is your Objective:</label>
+                    <select id="missionLevelLFG">
+                        <!-- Levels will be populated here -->
                     </select>
-                    <button type="button" onclick="postLFG()">Post LFG</button>
+
+                    <label for="runsLFG">Number of Runs:</label>
+                    <input type="number" id="runsLFG" min="1" value="1">
+
+                    <label for="descriptionLFG">Description:</label>
+                    <textarea id="descriptionLFG" rows="4" placeholder="Enter description here..."></textarea>
+
+                    <button type="button" onclick="createGroup('LFG')">Create LFG Post</button>
                 </form>
             </div>
             <div class="box">
-                <h2>Looking for Group</h2>
-                <div id="groupList">
-                    <!-- Dynamic group list items will be inserted here -->
-                </div>
+                <h2>LFM</h2>
+                <form id="lfmForm">
+                    <label for="missionTypeLFM">Select a Mission Type:</label>
+                    <select id="missionTypeLFM" onchange="updateLevels('LFM')">
+                        <option value="Void Farming">Void Farming</option>
+                        <option value="Calling of the Descendants">Calling of the Descendants</option>
+                        <option value="Normal Void Battles">Normal Void Battles</option>
+                        <option value="Hard Void Battles">Hard Void Battles</option>
+                        <option value="Encrypted Vaults">Encrypted Vaults</option>
+                        <option value="Zone Farming">Zone Farming</option>
+                    </select>
+
+                    <label for="missionLevelLFM">What is your Objective:</label>
+                    <select id="missionLevelLFM">
+                        <!-- Levels will be populated here -->
+                    </select>
+
+                    <label for="runsLFM">Number of Runs:</label>
+                    <input type="number" id="runsLFM" min="1" value="1">
+
+                    <label for="descriptionLFM">Description:</label>
+                    <textarea id="descriptionLFM" rows="4" placeholder="Enter description here..."></textarea>
+
+                    <button type="button" onclick="createGroup('LFM')">Create LFM Post</button>
+                </form>
             </div>
+        </div>
+
+        <!-- Recently Created Groups -->
+        <div id="groupList">
+            <h2>Recently Created Groups</h2>
+            <!-- Groups will be listed here -->
         </div>
     </div>
 
     <script>
-        function createAccount() {
-            // Handle account creation logic
+        const levels = {
+            "Void Farming": ['Fire', 'Electric', 'Ice', 'Toxic', 'Non-Attribute'],
+            "Calling of the Descendants": [
+                'Bio-Lab', 'Caligo Ossuary', 'Heart of the Fortress', 'Magister Lab', 
+                'Mystery\'s End', 'Old Mystery', 'Quarantine Zone', 'Seed Vault', 
+                'Sepulcher', 'Slumber Valley', 'The Asylum', 'The Chapel', 
+                'The Forgottense', 'The Haven', 'The Shelter', 'Unknown Laboratory'
+            ],
+            "Normal Void Battles": ['Grave Walker', 'Stunning Beauty', 'Executioner', 
+                                     'Dead Bride', 'Devourer', 'Pyromaniac', 
+                                     'Swamp Walker', 'Hanged Man'],
+            "Hard Void Battles": ['Executioner', 'Dead Bride', 'Devourer', 'Pyromaniac', 
+                                   'Swamp Walker', 'Obstructor', 'Frost Walker', 
+                                   'Molten Fortress'],
+            "Encrypted Vaults": ['Vault 1', 'Vault 2', 'Vault 3'], // Placeholder levels
+            "Zone Farming": ['Agna Desert', 'Echo Swamp', 'Fortress', 'Haigos', 
+                             'Kingston', 'Sterile Land', 'Vespers', 'White Night Gulch']
+        };
+
+        const groups = [];
+
+        function showProfileForm() {
             document.getElementById('splashPage').classList.add('hidden');
             document.getElementById('profileFormContainer').classList.remove('hidden');
         }
 
-        function selectPic(picId) {
-            // Update selected profile picture
-            document.querySelectorAll('.profile-pic').forEach(pic => {
-                pic.classList.remove('selected');
-            });
-            document.querySelector(`.profile-pic[onclick*="${picId}"]`).classList.add('selected');
-            document.getElementById('selectedPic').value = picId;
-        }
-
         function createProfile() {
-            // Handle profile creation logic
+            const username = document.getElementById('newUsername').value;
+            const profilePic = document.getElementById('selectedPic').value;
+            const character = document.getElementById('character').value;
+            const characterLevel = document.getElementById('characterLevel').value;
+            const platform = document.getElementById('platform').value;
+            const ingameUsername = document.getElementById('ingameUsername').value;
+
+            if (!username || !profilePic || !character || !characterLevel || !platform || !ingameUsername) {
+                alert('Please fill out all profile fields.');
+                return;
+            }
+
+            // Save profile data to session storage (optional)
+            sessionStorage.setItem('username', username);
+            sessionStorage.setItem('platform', platform);
+
             document.getElementById('profileFormContainer').classList.add('hidden');
             document.getElementById('mainContent').classList.remove('hidden');
         }
 
-        function postLFG() {
-            // Handle LFG posting logic
-            const missionType = document.getElementById('missionTypeLFG').value;
-            const desiredRole = document.getElementById('desiredRoleLFG').value;
-            const groupList = document.getElementById('groupList');
-            
-            // Create new group item
-            const groupItem = document.createElement('div');
-            groupItem.className = 'group-item';
-            groupItem.innerHTML = `
-                <strong>Mission Type:</strong> ${missionType}<br>
-                <strong>Desired Role:</strong> ${desiredRole}
-                <button onclick="joinGroup(this)">Join</button>
-            `;
-            groupList.appendChild(groupItem);
+        function createAccount() {
+            const username = document.getElementById('newUsername').value;
+            const email = document.getElementById('newEmail').value;
+            const password = document.getElementById('newPassword').value;
+
+            if (!username || !email || !password) {
+                alert('Please fill out all account fields.');
+                return;
+            }
+
+            document.getElementById('createAccountForm').classList.add('hidden');
+            showProfileForm();
         }
 
-        function joinGroup(button) {
-            // Handle joining a group
-            const groupItem = button.parentElement;
-            groupItem.parentElement.removeChild(groupItem);
+        function createGroup(type) {
+            const missionType = document.getElementById(`missionType${type}`).value;
+            const missionLevel = document.getElementById(`missionLevel${type}`).value;
+            const runs = document.getElementById(`runs${type}`).value;
+            const description = document.getElementById(`description${type}`).value;
+            const username = sessionStorage.getItem('username');
+            const platform = sessionStorage.getItem('platform');
+
+            if (!missionType || !missionLevel) {
+                alert('Please select both a mission type and objective.');
+                return;
+            }
+
+            const group = {
+                type: type,
+                missionType: missionType,
+                missionLevel: missionLevel,
+                runs: runs,
+                description: description,
+                timestamp: new Date(),
+                username: username || "Unknown User",
+                platform: platform || "Unknown Platform"
+            };
+
+            groups.unshift(group);
+            displayGroups();
         }
+
+        function updateLevels(type) {
+            const missionType = document.getElementById(`missionType${type}`).value;
+            const missionLevel = document.getElementById(`missionLevel${type}`);
+            missionLevel.innerHTML = '';
+
+            levels[missionType].forEach(level => {
+                const option = document.createElement('option');
+                option.value = level;
+                option.textContent = level;
+                missionLevel.appendChild(option);
+            });
+        }
+
+        function displayGroups() {
+            const groupList = document.getElementById('groupList');
+            groupList.innerHTML = '<h2>Recently Created Groups</h2>';
+
+            groups.forEach(group => {
+                const groupItem = document.createElement('div');
+                groupItem.classList.add('group-item');
+                groupItem.textContent = `${group.timestamp.toLocaleString()} - ${group.type} - ${group.missionType} - ${group.missionLevel} - Runs: ${group.runs} - ${group.description} - Username: ${group.username} - Platform: ${group.platform}`;
+                groupList.appendChild(groupItem);
+            });
+        }
+
+        function selectPic(picId) {
+            document.getElementById('selectedPic').value = picId;
+            const pics = document.querySelectorAll('.profile-pic');
+            pics.forEach(pic => pic.style.border = 'none');
+            document.querySelector(`.profile-pic img[src*="${picId}"]`).parentElement.style.border = '2px solid #009688';
+        }
+
+        updateLevels('LFG');
+        updateLevels('LFM');
     </script>
 </body>
 </html>
