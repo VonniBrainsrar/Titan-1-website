@@ -57,8 +57,7 @@ document.addEventListener("DOMContentLoaded", () => {
         height: "100px",
         margin: "10px",
         borderRadius: "50%",
-        cursor: "pointer",
-        pointerEvents: "auto"  // Ensure the profile picture is clickable
+        cursor: "pointer"
     };
 
     const profilePicHoverStyle = {
@@ -119,6 +118,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const neonButtonActiveStyle = {
         boxShadow: "0 0 15px rgba(0, 150, 136, 0.4)",
         transform: "scale(1)"
+    };
+
+    const countdownTimerStyle = {
+        fontSize: "0.9em",
+        color: "#ff5722"
     };
 
     // Handle profile picture click
@@ -200,6 +204,10 @@ document.addEventListener("DOMContentLoaded", () => {
             button.addEventListener('mousedown', () => Object.assign(button.style, neonButtonActiveStyle));
             button.addEventListener('mouseup', () => Object.assign(button.style, neonButtonStyle));
         });
+
+        // Apply styles to countdown timers
+        const countdownTimers = document.querySelectorAll('.countdown-timer');
+        countdownTimers.forEach(timer => Object.assign(timer.style, countdownTimerStyle));
     };
 
     applyStyles();
